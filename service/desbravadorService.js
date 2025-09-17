@@ -18,9 +18,9 @@ function criarDesbravador({ nome, idade, documento, clubeNome, unidade }) {
   // Case insensitive para unidade e garantir unicidade
   const unidadeValida = clube.unidades.find(u => u.toLowerCase() === unidade.toLowerCase());
   if (!unidadeValida) throw new Error('Unidade não encontrada neste clube');
-  // Documento único no sistema (não pode estar em mais de um clube)
-  const documentoExistente = desbravadores.find(d => d.documento === documento);
-  if (documentoExistente) throw new Error('Desbravador já cadastrado em outro clube. Um desbravador só pode estar em um clube.');
+  // Documento único por clube (não pode cadastrar o mesmo documento duas vezes no mesmo clube)
+  const documentoNoMesmoClube = desbravadores.find(d => d.documento === documento && d.clubeNome.toLowerCase() === clube.nome.toLowerCase());
+  if (documentoNoMesmoClube) throw new Error('Desbravador já cadastrado neste clube. Não é permitido duplicidade de documento no mesmo clube.');
   // Limite de 10 desbravadores por unidade (case insensitive)
   const count = desbravadores.filter(d => d.clubeNome.toLowerCase() === clube.nome.toLowerCase() && d.unidade.toLowerCase() === unidadeValida.toLowerCase()).length;
   if (count >= 10) throw new Error('Unidade já possui 10 desbravadores');

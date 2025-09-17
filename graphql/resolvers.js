@@ -66,7 +66,11 @@ module.exports = {
     desbravadores: (parent) => parent.desbravadores || [],
   },
   Desbravador: {
-    clube: (parent) => parent.clube || null,
+    clube: (parent) => {
+      const { clubes } = require('../model/data');
+      if (!parent.clubeNome) return null;
+      return clubes.find(c => c.nome.toLowerCase() === parent.clubeNome.toLowerCase()) || null;
+    },
     unidade: (parent) => parent.unidade,
   },
   Unidade: {
