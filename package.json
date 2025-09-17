@@ -9,7 +9,7 @@
     "test": "mocha --recursive --exit"
   },
   "dependencies": {
-    "apollo-server-express": "^3.12.0",
+    "apollo-server-express": "^3.13.0",
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
@@ -18,10 +18,12 @@
     "swagger-ui-express": "^4.6.3"
   },
   "devDependencies": {
-    "chai": "^4.3.7",
-    "mocha": "^10.2.0",
+    "chai": "^5.3.3",
+    "chai-exclude": "^3.0.1",
+    "mocha": "^10.8.2",
+    "mochawesome": "^7.1.4",
     "nodemon": "^3.0.1",
-    "sinon": "^16.0.0",
-    "supertest": "^6.3.3"
+    "sinon": "^16.1.3",
+    "supertest": "^6.3.4"
   }
 }
