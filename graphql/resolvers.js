@@ -18,6 +18,11 @@ module.exports = {
       jwtMiddleware.graphql(context.req);
       return clubeService.listarClubes();
     },
+    buscarClubes: (parent, { nome }, context) => {
+      jwtMiddleware.graphql(context.req);
+      if (!nome) throw new Error('O parâmetro "nome" é obrigatório para busca de clubes.');
+      return clubeService.buscarClubesPorNome(nome);
+    },
     clube: (parent, { id }, context) => {
       jwtMiddleware.graphql(context.req);
       if (id == null) throw new Error('O parâmetro "id" do clube é obrigatório.');
@@ -30,6 +35,11 @@ module.exports = {
       if (clubeId == null) throw new Error('O parâmetro "clubeId" é obrigatório para listar unidades.');
       return unidadeService.listarUnidadesPorClube(Number(clubeId));
     },
+    buscarUnidades: (parent, { nome }, context) => {
+      jwtMiddleware.graphql(context.req);
+      if (!nome) throw new Error('O parâmetro "nome" é obrigatório para busca de unidades.');
+      return unidadeService.buscarUnidadesPorNome(nome);
+    },
     unidade: (parent, { id }, context) => {
       jwtMiddleware.graphql(context.req);
       if (id == null) throw new Error('O parâmetro "id" da unidade é obrigatório.');
@@ -41,6 +51,11 @@ module.exports = {
       jwtMiddleware.graphql(context.req);
       if (unidadeId == null) throw new Error('O parâmetro "unidadeId" é obrigatório para listar desbravadores.');
       return desbravadorService.listarDesbravadoresPorUnidade(Number(unidadeId));
+    },
+    buscarDesbravadores: (parent, { nome }, context) => {
+      jwtMiddleware.graphql(context.req);
+      if (!nome) throw new Error('O parâmetro "nome" é obrigatório para busca de desbravadores.');
+      return desbravadorService.buscarDesbravadoresPorNome(nome);
     },
     desbravador: (parent, { id }, context) => {
       jwtMiddleware.graphql(context.req);

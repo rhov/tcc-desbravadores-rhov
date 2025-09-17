@@ -1,3 +1,8 @@
+function buscarUnidadesPorNome(parteNome) {
+  if (!parteNome) return unidades;
+  const termo = parteNome.toLowerCase();
+  return unidades.filter(u => u.nome.toLowerCase().includes(termo));
+}
 const { unidades, clubes, desbravadores } = require('../model/data');
 
 function criarUnidade({ nome, sexo, clubeId }) {
@@ -21,4 +26,4 @@ function contarDesbravadoresNaUnidade(unidadeId) {
   return desbravadores.filter(d => d.unidadeId === unidadeId).length;
 }
 
-module.exports = { criarUnidade, listarUnidadesPorClube, contarDesbravadoresNaUnidade };
+module.exports = { criarUnidade, listarUnidadesPorClube, contarDesbravadoresNaUnidade, buscarUnidadesPorNome };

@@ -1,3 +1,8 @@
+function buscarDesbravadoresPorNome(parteNome) {
+  if (!parteNome) return desbravadores;
+  const termo = parteNome.toLowerCase();
+  return desbravadores.filter(d => d.nome.toLowerCase().includes(termo));
+}
 const { desbravadores, unidades, clubes } = require('../model/data');
 
 function criarDesbravador({ nome, idade, documento, sexo, unidadeId }) {
@@ -26,4 +31,4 @@ function listarDesbravadoresPorUnidade(unidadeId) {
   return desbravadores.filter(d => d.unidadeId === unidadeId);
 }
 
-module.exports = { criarDesbravador, listarDesbravadoresPorUnidade };
+module.exports = { criarDesbravador, listarDesbravadoresPorUnidade, buscarDesbravadoresPorNome };

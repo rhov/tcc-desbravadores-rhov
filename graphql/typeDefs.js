@@ -41,10 +41,15 @@ module.exports = gql`
 
     clubes: [Clube!]!
     clube(id: ID!): Clube
+    buscarClubes(nome: String!): [Clube!]!
+
     unidades(clubeId: ID!): [Unidade!]!
     unidade(id: ID!): Unidade
+    buscarUnidades(nome: String!): [Unidade!]!
+
     desbravadores(unidadeId: ID!): [Desbravador!]!
     desbravador(id: ID!): Desbravador
+    buscarDesbravadores(nome: String!): [Desbravador!]!
   }
 
   type Mutation {

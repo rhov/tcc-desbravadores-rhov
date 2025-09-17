@@ -10,8 +10,15 @@ function criarClube({ nome }) {
   return clube;
 }
 
+
 function listarClubes() {
   return clubes;
 }
 
-module.exports = { criarClube, listarClubes };
+function buscarClubesPorNome(parteNome) {
+  if (!parteNome) return clubes;
+  const termo = parteNome.toLowerCase();
+  return clubes.filter(c => c.nome.toLowerCase().includes(termo));
+}
+
+module.exports = { criarClube, listarClubes, buscarClubesPorNome };
