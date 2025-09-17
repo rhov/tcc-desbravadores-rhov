@@ -6,18 +6,17 @@ module.exports = gql`
     username: String!
   }
 
-  type Clube {
-    id: ID!
-    nome: String!
-    unidades: [Unidade!]!
-  }
 
   type Unidade {
     id: ID!
     nome: String!
     sexo: String!
-    clube: Clube!
-    desbravadores: [Desbravador!]!
+  }
+
+  type Clube {
+    id: ID!
+    nome: String!
+    unidades: [Unidade!]!
   }
 
   type Desbravador {
@@ -26,6 +25,7 @@ module.exports = gql`
     idade: Int!
     documento: String!
     sexo: String!
+    clube: Clube!
     unidade: Unidade!
   }
 
@@ -43,11 +43,9 @@ module.exports = gql`
     clube(id: ID!): Clube
     buscarClubes(nome: String!): [Clube!]!
 
-    unidades(clubeId: ID!): [Unidade!]!
-    unidade(id: ID!): Unidade
-    buscarUnidades(nome: String!): [Unidade!]!
+    buscarUnidades(clubeId: ID!, nome: String!): [Unidade!]!
 
-    desbravadores(unidadeId: ID!): [Desbravador!]!
+    desbravadores(clubeId: ID!, unidadeId: ID!): [Desbravador!]!
     desbravador(id: ID!): Desbravador
     buscarDesbravadores(nome: String!): [Desbravador!]!
   }
@@ -57,8 +55,12 @@ module.exports = gql`
     registerUser(username: String!, password: String!): AuthPayload!
 
     # As mutations abaixo são protegidas por JWT (token no header)
-    criarClube(nome: String!): Clube!
-    criarUnidade(nome: String!, sexo: String!, clubeId: ID!): Unidade!
-    criarDesbravador(nome: String!, idade: Int!, documento: String!, sexo: String!, unidadeId: ID!): Desbravador!
+    criarClube(nome: String!, unidades: [NovaUnidadeInput!]): Clube!
+    criarDesbravador(nome: String!, idade: Int!, documento: String!, sexo: String!, clubeId: ID!, unidadeId: ID!): Desbravador!
+  }
+
+  input NovaUnidadeInput {
+    nome: String!
+    sexo: String!
   }
 `;

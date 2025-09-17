@@ -1,15 +1,28 @@
 const { clubes } = require('../model/data');
 
-function criarClube({ nome }) {
+function criarClube({ nome, unidades }) {
   if (!nome) throw new Error('Nome do clube é obrigatório');
   if (clubes.find(c => c.nome.toLowerCase() === nome.toLowerCase())) {
     throw new Error('Nome do clube já existe');
   }
-  const clube = { id: clubes.length + 1, nome };
+  // Unidades é opcional, mas se vier, valida duplicidade de nome
+  let unidadesValidadas = [];
+  if (unidades && Array.isArray(unidades)) {
+    const nomes = unidades.map(u => u.nome.toLowerCase());
+    const nomesDuplicados = nomes.filter((n, i) => nomes.indexOf(n) !== i);
+    if (nomesDuplicados.length > 0) {
+      throw new Error('Não pode haver duas unidades com o mesmo nome no mesmo clube');
+    }
+    unidadesValidadas = unidades.map((u, idx) => {
+      if (!u.nome || !u.sexo) throw new Error('Toda unidade precisa de nome e sexo');
+      if (!['M', 'F'].includes(u.sexo)) throw new Error('Sexo da unidade deve ser M ou F');
+      return { id: idx + 1, nome: u.nome, sexo: u.sexo };
+    });
+  }
+  const clube = { id: clubes.length + 1, nome, unidades: unidadesValidadas };
   clubes.push(clube);
   return clube;
 }
-
 
 function listarClubes() {
   return clubes;
@@ -21,4 +34,12 @@ function buscarClubesPorNome(parteNome) {
   return clubes.filter(c => c.nome.toLowerCase().includes(termo));
 }
 
-module.exports = { criarClube, listarClubes, buscarClubesPorNome };
+function buscarUnidadesPorNome(clubeId, parteNome) {
+  const clube = clubes.find(c => c.id === clubeId);
+  if (!clube) throw new Error('Clube não encontrado');
+  if (!parteNome) return clube.unidades;
+  const termo = parteNome.toLowerCase();
+  return clube.unidades.filter(u => u.nome.toLowerCase().includes(termo));
+}
+
+module.exports = { criarClube, listarClubes, buscarClubesPorNome, buscarUnidadesPorNome };
