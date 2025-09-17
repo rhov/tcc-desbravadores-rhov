@@ -1,6 +1,6 @@
 
 const userService = require('../service/userService');
-// const transferService = require('../service/transferService');
+
 const jwtMiddleware = require('./middleware/auth');
 const clubeService = require('../service/clubeService');
 const desbravadorService = require('../service/desbravadorService');

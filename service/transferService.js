@@ -1,5 +1,4 @@
 const { transfers } = require('../model/data');
-
 function transfer(req, res) {
   const { from, to, amount } = req.body;
   if (!from || !to || typeof amount !== 'number') return res.status(400).json({ error: 'Dados obrigatórios' });
