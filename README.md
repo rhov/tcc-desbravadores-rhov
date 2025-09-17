@@ -84,9 +84,15 @@ curl -X POST http://localhost:3000/unidades -H 'Authorization: Bearer <token>' -
 curl -X POST http://localhost:3000/desbravadores -H 'Authorization: Bearer <token>' -H 'Content-Type: application/json' -d '{"nome":"João","idade":12,"documento":"123456789","sexo":"M","unidadeId":1}'
 ```
 
+
 ## Exemplo de uso GraphQL
 
+> **Atenção:** Apenas as mutations `login` e `registerUser` recebem username e password. Todas as demais mutations e queries protegidas exigem o token JWT no header:
+> 
+> `Authorization: Bearer <token>`
+
 ```graphql
+# Login (gera token)
 mutation {
   login(username: "admin", password: "123456") {
     token
@@ -94,6 +100,7 @@ mutation {
   }
 }
 
+# As mutations abaixo exigem JWT no header
 mutation {
   criarClube(nome: "Clube Alpha") { id nome }
 }

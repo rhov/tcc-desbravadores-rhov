@@ -4,9 +4,9 @@ const clubes = [];
 const unidades = [];
 const desbravadores = [];
 
-// Usuários e transferências (exemplo, pode ser removido depois)
+
+// Usuários (exemplo)
 const users = [];
-const transfers = [];
 
 /*
 Regras de negócio:
@@ -20,5 +20,4 @@ module.exports = {
 	unidades,
 	desbravadores,
 	users,
-	transfers,
 };

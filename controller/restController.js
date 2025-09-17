@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const jwtMiddleware = require('../graphql/middleware/auth');
 const userService = require('../service/userService');
-const transferService = require('../service/transferService');
+// const transferService = require('../service/transferService');
 
 /**
  * @swagger
@@ -70,52 +70,7 @@ router.post('/login', userService.login);
  */
 router.get('/users', jwtMiddleware.rest, userService.getUsers);
 
-/**
- * @swagger
- * /transfer:
- *   post:
- *     summary: Realiza uma transferência
- *     tags: [Transfer]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               from:
- *                 type: string
- *               to:
- *                 type: string
- *               amount:
- *                 type: number
- *     responses:
- *       201:
- *         description: Transferência realizada
- *       400:
- *         description: Dados inválidos
- *       401:
- *         description: Não autorizado
- */
-router.post('/transfer', jwtMiddleware.rest, transferService.transfer);
 
-/**
- * @swagger
- * /transfers:
- *   get:
- *     summary: Lista todas as transferências
- *     tags: [Transfer]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Lista de transferências
- *       401:
- *         description: Não autorizado
- */
-router.get('/transfers', jwtMiddleware.rest, transferService.getTransfers);
 
 
 // --- Clubes ---

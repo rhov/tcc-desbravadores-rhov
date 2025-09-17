@@ -29,12 +29,7 @@ module.exports = gql`
     unidade: Unidade!
   }
 
-  type Transfer {
-    id: ID!
-    from: String!
-    to: String!
-    amount: Float!
-  }
+
 
   type AuthPayload {
     token: String!
@@ -43,7 +38,7 @@ module.exports = gql`
 
   type Query {
     users: [User!]!
-    transfers: [Transfer!]!
+
     clubes: [Clube!]!
     clube(id: ID!): Clube
     unidades(clubeId: ID!): [Unidade!]!
@@ -55,8 +50,8 @@ module.exports = gql`
   type Mutation {
     login(username: String!, password: String!): AuthPayload!
     registerUser(username: String!, password: String!): AuthPayload!
-    transfer(from: String!, to: String!, amount: Float!): Transfer!
 
+    # As mutations abaixo são protegidas por JWT (token no header)
     criarClube(nome: String!): Clube!
     criarUnidade(nome: String!, sexo: String!, clubeId: ID!): Unidade!
     criarDesbravador(nome: String!, idade: Int!, documento: String!, sexo: String!, unidadeId: ID!): Desbravador!
