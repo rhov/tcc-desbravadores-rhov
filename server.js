@@ -13,7 +13,7 @@ http.createServer(app).listen(REST_PORT, () => {
   console.log(`GraphQL em http://localhost:${REST_PORT}/graphql`);
  // exec('open -a "Google Chrome" http://localhost:' + REST_PORT);
   // exec('open -a "Google Chrome" http://localhost:' + REST_PORT + '/api-docs');
-  exec('open -a "Google Chrome" http://localhost:' + REST_PORT + '/graphql');
+  //exec('open -a "Google Chrome" http://localhost:' + REST_PORT + '/graphql');
 });
 
 // GraphQL server (Apollo já está embutido no Express)
