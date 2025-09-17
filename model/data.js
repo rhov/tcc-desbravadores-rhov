@@ -1,23 +1,13 @@
 
 // Dados em memória
+// Clube: { id, nome, unidades: [String] }
+// Desbravador: { nome, idade, documento, clubeNome, unidade }
 const clubes = [];
-const unidades = [];
 const desbravadores = [];
-
-
-// Usuários (exemplo)
 const users = [];
 
-/*
-Regras de negócio:
-- Clube: { id, nome }
-- Unidade: { id, nome, sexo, clubeId }
-- Desbravador: { id, nome, idade, documento, sexo, unidadeId }
-*/
-
 module.exports = {
-	clubes,
-	unidades,
-	desbravadores,
-	users,
+  clubes,
+  desbravadores,
+  users,
 };
