@@ -11,16 +11,20 @@ module.exports = gql`
     id: ID!
     nome: String!
     unidades: [String!]!
+    desbravadores: [Desbravador!]!
   }
 
   type Desbravador {
-    id: ID!
     nome: String!
     idade: Int!
     documento: String!
-    sexo: String!
-    clube: Clube!
+    clube: Clube
     unidade: String!
+  }
+  type Unidade {
+    nome: String!
+    clube: Clube
+    desbravadores: [Desbravador!]!
   }
 
 
@@ -32,16 +36,9 @@ module.exports = gql`
 
   type Query {
     users: [User!]!
-
-    clubes: [Clube!]!
-    clube(id: ID!): Clube
-    buscarClubes(nome: String!): [Clube!]!
-
-  buscarUnidades(clubeId: ID!, nome: String!): [String!]!
-
-  desbravadores(clubeId: ID!, unidade: String!): [Desbravador!]!
-    desbravador(id: ID!): Desbravador
-    buscarDesbravadores(nome: String!): [Desbravador!]!
+    buscarClube(nome: String!, incluirDesbravadores: Boolean, incluirUnidades: Boolean): Clube
+    buscarDesbravador(documento: String!, incluirClube: Boolean, incluirUnidade: Boolean): Desbravador
+    buscarUnidade(clubeNome: String!, unidade: String!, incluirClube: Boolean, incluirDesbravadores: Boolean): Unidade
   }
 
   type Mutation {

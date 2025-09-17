@@ -1,7 +1,7 @@
 
 // Dados em memória
-// Clube: { id, nome, unidades: [{ id, nome, sexo }] }
-// Desbravador: { id, nome, idade, documento, sexo, clubeId, unidadeId }
+// Clube: { id, nome, unidades: [String] }
+// Desbravador: { nome, idade, documento, clubeNome, unidade }
 const clubes = [];
 const desbravadores = [];
 const users = [];

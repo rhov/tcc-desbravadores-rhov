@@ -12,44 +12,40 @@ module.exports = {
       jwtMiddleware.graphql(context.req);
       return userService.getUsersGraphQL();
     },
-
-    clubes: (parent, args, context) => {
+    buscarClube: (parent, { nome, incluirDesbravadores, incluirUnidades }, context) => {
       jwtMiddleware.graphql(context.req);
-      return clubeService.listarClubes();
+      if (!nome) throw new Error('O parâmetro "nome" do clube é obrigatório.');
+      const clube = clubes.find(c => c.nome.toLowerCase() === nome.toLowerCase());
+      if (!clube) throw new Error('Clube não encontrado para o nome informado.');
+      return {
+        ...clube,
+        desbravadores: incluirDesbravadores ? desbravadores.filter(d => d.clubeNome.toLowerCase() === clube.nome.toLowerCase()) : [],
+        unidades: incluirUnidades ? clube.unidades : [],
+      };
     },
-    buscarClubes: (parent, { nome }, context) => {
+    buscarDesbravador: (parent, { documento, incluirClube, incluirUnidade }, context) => {
       jwtMiddleware.graphql(context.req);
-      if (!nome) throw new Error('O parâmetro "nome" é obrigatório para busca de clubes.');
-      return clubeService.buscarClubesPorNome(nome);
+      if (!documento) throw new Error('O parâmetro "documento" do desbravador é obrigatório.');
+      const desbravador = desbravadores.find(d => d.documento.toLowerCase() === documento.toLowerCase());
+      if (!desbravador) throw new Error('Desbravador não encontrado para o documento informado.');
+      return {
+        ...desbravador,
+        clube: incluirClube ? clubes.find(c => c.nome.toLowerCase() === desbravador.clubeNome.toLowerCase()) : null,
+        unidade: incluirUnidade ? desbravador.unidade : desbravador.unidade,
+      };
     },
-    clube: (parent, { id }, context) => {
+    buscarUnidade: (parent, { clubeNome, unidade, incluirClube, incluirDesbravadores }, context) => {
       jwtMiddleware.graphql(context.req);
-      if (id == null) throw new Error('O parâmetro "id" do clube é obrigatório.');
-      const clube = clubes.find(c => c.id == id);
-      if (!clube) throw new Error('Clube não encontrado para o id informado.');
-      return clube;
-    },
-    buscarUnidades: (parent, { clubeId, nome }, context) => {
-      jwtMiddleware.graphql(context.req);
-      if (!clubeId || !nome) throw new Error('Os parâmetros "clubeId" e "nome" são obrigatórios para busca de unidades.');
-      return clubeService.buscarUnidadesPorNome(Number(clubeId), nome);
-    },
-    desbravadores: (parent, { clubeId, unidade }, context) => {
-      jwtMiddleware.graphql(context.req);
-      if (!clubeId || !unidade) throw new Error('Os parâmetros "clubeId" e "unidade" são obrigatórios para listar desbravadores.');
-      return desbravadorService.listarDesbravadoresPorUnidade(Number(clubeId), unidade);
-    },
-    buscarDesbravadores: (parent, { nome }, context) => {
-      jwtMiddleware.graphql(context.req);
-      if (!nome) throw new Error('O parâmetro "nome" é obrigatório para busca de desbravadores.');
-      return desbravadorService.buscarDesbravadoresPorNome(nome);
-    },
-    desbravador: (parent, { id }, context) => {
-      jwtMiddleware.graphql(context.req);
-      if (id == null) throw new Error('O parâmetro "id" do desbravador é obrigatório.');
-      const desbravador = desbravadores.find(d => d.id == id);
-      if (!desbravador) throw new Error('Desbravador não encontrado para o id informado.');
-      return desbravador;
+      if (!clubeNome || !unidade) throw new Error('Os parâmetros "clubeNome" e "unidade" são obrigatórios.');
+      const clube = clubes.find(c => c.nome.toLowerCase() === clubeNome.toLowerCase());
+      if (!clube) throw new Error('Clube não encontrado');
+      const unidadeValida = clube.unidades.find(u => u.toLowerCase() === unidade.toLowerCase());
+      if (!unidadeValida) throw new Error('Unidade não encontrada neste clube');
+      return {
+        nome: unidadeValida,
+        clube: incluirClube ? clube : null,
+        desbravadores: incluirDesbravadores ? desbravadores.filter(d => d.clubeNome.toLowerCase() === clube.nome.toLowerCase() && d.unidade.toLowerCase() === unidadeValida.toLowerCase()) : [],
+      };
     },
   },
   Mutation: {
@@ -67,9 +63,14 @@ module.exports = {
   },
   Clube: {
     unidades: (parent) => parent.unidades || [],
+    desbravadores: (parent) => parent.desbravadores || [],
   },
   Desbravador: {
-    clube: (parent) => clubes.find(c => c.id === parent.clubeId),
+    clube: (parent) => parent.clube || null,
     unidade: (parent) => parent.unidade,
+  },
+  Unidade: {
+    clube: (parent) => parent.clube || null,
+    desbravadores: (parent) => parent.desbravadores || [],
   },
 };

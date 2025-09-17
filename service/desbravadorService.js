@@ -8,26 +8,33 @@ function buscarDesbravadoresPorNome(parteNome) {
 }
 
 
-function criarDesbravador({ nome, idade, documento, sexo, clubeId, unidade }) {
-  if (!nome || !idade || !documento || !sexo || !clubeId || !unidade) throw new Error('Todos os campos são obrigatórios');
+function criarDesbravador({ nome, idade, documento, clubeNome, unidade }) {
+  if (!nome || !idade || !documento || !clubeNome || !unidade) throw new Error('Todos os campos são obrigatórios');
   if (idade < 10 || idade > 15) throw new Error('Idade deve ser entre 10 e 15 anos');
-  if (!['M', 'F'].includes(sexo)) throw new Error('Sexo deve ser M ou F');
-  const clube = clubes.find(c => c.id === clubeId);
+  // Case insensitive para nome do clube
+  const clube = clubes.find(c => c.nome.toLowerCase() === clubeNome.toLowerCase());
   if (!clube) throw new Error('Clube não encontrado');
-  if (!clube.unidades.includes(unidade)) throw new Error('Unidade não encontrada neste clube');
-  // Documento único por clube
-  const documentosNoClube = desbravadores.filter(d => d.clubeId === clubeId && d.documento === documento);
-  if (documentosNoClube.length > 0) throw new Error('Documento já cadastrado neste clube');
-  // Limite de 10 desbravadores por unidade
-  const count = desbravadores.filter(d => d.clubeId === clubeId && d.unidade === unidade).length;
+  // Case insensitive para unidade e garantir unicidade
+  const unidadeValida = clube.unidades.find(u => u.toLowerCase() === unidade.toLowerCase());
+  if (!unidadeValida) throw new Error('Unidade não encontrada neste clube');
+  // Documento único no sistema (não pode estar em mais de um clube)
+  const documentoExistente = desbravadores.find(d => d.documento === documento);
+  if (documentoExistente) throw new Error('Desbravador já cadastrado em outro clube. Um desbravador só pode estar em um clube.');
+  // Limite de 10 desbravadores por unidade (case insensitive)
+  const count = desbravadores.filter(d => d.clubeNome.toLowerCase() === clube.nome.toLowerCase() && d.unidade.toLowerCase() === unidadeValida.toLowerCase()).length;
   if (count >= 10) throw new Error('Unidade já possui 10 desbravadores');
-  const desbravador = { id: desbravadores.length + 1, nome, idade, documento, sexo, clubeId, unidade };
+  const desbravador = { nome, idade, documento, clubeNome: clube.nome, unidade: unidadeValida };
   desbravadores.push(desbravador);
   return desbravador;
 }
 
-function listarDesbravadoresPorUnidade(clubeId, unidade) {
-  return desbravadores.filter(d => d.clubeId === clubeId && d.unidade === unidade);
+function listarDesbravadoresPorUnidade(clubeNome, unidade) {
+  // Garante existência do clube e unidade (case insensitive)
+  const clube = clubes.find(c => c.nome.toLowerCase() === clubeNome.toLowerCase());
+  if (!clube) throw new Error('Clube não encontrado');
+  const unidadeValida = clube.unidades.find(u => u.toLowerCase() === unidade.toLowerCase());
+  if (!unidadeValida) throw new Error('Unidade não encontrada neste clube');
+  return desbravadores.filter(d => d.clubeNome.toLowerCase() === clube.nome.toLowerCase() && d.unidade.toLowerCase() === unidadeValida.toLowerCase());
 }
 
 module.exports = { criarDesbravador, listarDesbravadoresPorUnidade, buscarDesbravadoresPorNome };

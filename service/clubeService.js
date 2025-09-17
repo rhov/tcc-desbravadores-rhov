@@ -6,15 +6,16 @@ function criarClube({ nome, unidades }) {
   if (clubes.find(c => c.nome.toLowerCase() === nome.toLowerCase())) {
     throw new Error('Nome do clube já existe');
   }
-  // Unidades é opcional, mas se vier, valida duplicidade de nome
+  // Unidades é opcional, mas se vier, valida duplicidade de nome (case insensitive)
   let unidadesValidadas = [];
   if (unidades && Array.isArray(unidades)) {
-    const nomes = unidades.map(u => (typeof u === 'string' ? u : u.nome).toLowerCase());
-    const nomesDuplicados = nomes.filter((n, i) => nomes.indexOf(n) !== i);
+    const nomesOriginais = unidades.map(u => (typeof u === 'string' ? u : u.nome));
+    const nomesLower = nomesOriginais.map(n => n.toLowerCase());
+    const nomesDuplicados = nomesLower.filter((n, i) => nomesLower.indexOf(n) !== i);
     if (nomesDuplicados.length > 0) {
       throw new Error('Não pode haver duas unidades com o mesmo nome no mesmo clube');
     }
-    unidadesValidadas = nomes;
+    unidadesValidadas = nomesOriginais;
   }
   const clube = { id: clubes.length + 1, nome, unidades: unidadesValidadas };
   clubes.push(clube);
