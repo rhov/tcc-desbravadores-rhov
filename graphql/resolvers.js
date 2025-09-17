@@ -56,9 +56,9 @@ module.exports = {
       jwtMiddleware.graphql(context.req);
       return clubeService.criarClube({ nome, unidades });
     },
-    criarDesbravador: (parent, { nome, idade, documento, sexo, clubeId, unidade }, context) => {
+    criarDesbravador: (parent, { nome, idade, documento, clubeNome, unidade }, context) => {
       jwtMiddleware.graphql(context.req);
-      return desbravadorService.criarDesbravador({ nome, idade, documento, sexo, clubeId: Number(clubeId), unidade });
+      return desbravadorService.criarDesbravador({ nome, idade, documento, clubeNome, unidade });
     },
   },
   Clube: {

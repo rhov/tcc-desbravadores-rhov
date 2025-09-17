@@ -17,7 +17,7 @@ module.exports = gql`
   type Desbravador {
     nome: String!
     idade: Int!
-    documento: String!
+    documento: Int!
     clube: Clube
     unidade: String!
   }
@@ -37,7 +37,7 @@ module.exports = gql`
   type Query {
     users: [User!]!
     buscarClube(nome: String!, incluirDesbravadores: Boolean, incluirUnidades: Boolean): Clube
-    buscarDesbravador(documento: String!, incluirClube: Boolean, incluirUnidade: Boolean): Desbravador
+  buscarDesbravador(documento: Int!, incluirClube: Boolean, incluirUnidade: Boolean): Desbravador
     buscarUnidade(clubeNome: String!, unidade: String!, incluirClube: Boolean, incluirDesbravadores: Boolean): Unidade
   }
 
@@ -47,6 +47,6 @@ module.exports = gql`
 
     # As mutations abaixo são protegidas por JWT (token no header)
     criarClube(nome: String!, unidades: [String!]): Clube!
-    criarDesbravador(nome: String!, idade: Int!, documento: String!, sexo: String!, clubeId: ID!, unidade: String!): Desbravador!
+  criarDesbravador(nome: String!, idade: Int!, documento: Int!, clubeNome: String!, unidade: String!): Desbravador!
   }
 `;
