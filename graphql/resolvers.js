@@ -34,10 +34,10 @@ module.exports = {
       if (!clubeId || !nome) throw new Error('Os parâmetros "clubeId" e "nome" são obrigatórios para busca de unidades.');
       return clubeService.buscarUnidadesPorNome(Number(clubeId), nome);
     },
-    desbravadores: (parent, { clubeId, unidadeId }, context) => {
+    desbravadores: (parent, { clubeId, unidade }, context) => {
       jwtMiddleware.graphql(context.req);
-      if (!clubeId || !unidadeId) throw new Error('Os parâmetros "clubeId" e "unidadeId" são obrigatórios para listar desbravadores.');
-      return desbravadorService.listarDesbravadoresPorUnidade(Number(clubeId), Number(unidadeId));
+      if (!clubeId || !unidade) throw new Error('Os parâmetros "clubeId" e "unidade" são obrigatórios para listar desbravadores.');
+      return desbravadorService.listarDesbravadoresPorUnidade(Number(clubeId), unidade);
     },
     buscarDesbravadores: (parent, { nome }, context) => {
       jwtMiddleware.graphql(context.req);
@@ -60,9 +60,9 @@ module.exports = {
       jwtMiddleware.graphql(context.req);
       return clubeService.criarClube({ nome, unidades });
     },
-    criarDesbravador: (parent, { nome, idade, documento, sexo, clubeId, unidadeId }, context) => {
+    criarDesbravador: (parent, { nome, idade, documento, sexo, clubeId, unidade }, context) => {
       jwtMiddleware.graphql(context.req);
-      return desbravadorService.criarDesbravador({ nome, idade, documento, sexo, clubeId: Number(clubeId), unidadeId: Number(unidadeId) });
+      return desbravadorService.criarDesbravador({ nome, idade, documento, sexo, clubeId: Number(clubeId), unidade });
     },
   },
   Clube: {
@@ -70,10 +70,6 @@ module.exports = {
   },
   Desbravador: {
     clube: (parent) => clubes.find(c => c.id === parent.clubeId),
-    unidade: (parent) => {
-      const clube = clubes.find(c => c.id === parent.clubeId);
-      if (!clube) return null;
-      return (clube.unidades || []).find(u => u.id === parent.unidadeId) || null;
-    },
+    unidade: (parent) => parent.unidade,
   },
 };

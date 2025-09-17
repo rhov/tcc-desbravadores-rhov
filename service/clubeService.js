@@ -1,5 +1,6 @@
 const { clubes } = require('../model/data');
 
+
 function criarClube({ nome, unidades }) {
   if (!nome) throw new Error('Nome do clube é obrigatório');
   if (clubes.find(c => c.nome.toLowerCase() === nome.toLowerCase())) {
@@ -8,16 +9,12 @@ function criarClube({ nome, unidades }) {
   // Unidades é opcional, mas se vier, valida duplicidade de nome
   let unidadesValidadas = [];
   if (unidades && Array.isArray(unidades)) {
-    const nomes = unidades.map(u => u.nome.toLowerCase());
+    const nomes = unidades.map(u => (typeof u === 'string' ? u : u.nome).toLowerCase());
     const nomesDuplicados = nomes.filter((n, i) => nomes.indexOf(n) !== i);
     if (nomesDuplicados.length > 0) {
       throw new Error('Não pode haver duas unidades com o mesmo nome no mesmo clube');
     }
-    unidadesValidadas = unidades.map((u, idx) => {
-      if (!u.nome || !u.sexo) throw new Error('Toda unidade precisa de nome e sexo');
-      if (!['M', 'F'].includes(u.sexo)) throw new Error('Sexo da unidade deve ser M ou F');
-      return { id: idx + 1, nome: u.nome, sexo: u.sexo };
-    });
+    unidadesValidadas = nomes;
   }
   const clube = { id: clubes.length + 1, nome, unidades: unidadesValidadas };
   clubes.push(clube);
@@ -39,7 +36,7 @@ function buscarUnidadesPorNome(clubeId, parteNome) {
   if (!clube) throw new Error('Clube não encontrado');
   if (!parteNome) return clube.unidades;
   const termo = parteNome.toLowerCase();
-  return clube.unidades.filter(u => u.nome.toLowerCase().includes(termo));
+  return clube.unidades.filter(nome => nome.toLowerCase().includes(termo));
 }
 
 module.exports = { criarClube, listarClubes, buscarClubesPorNome, buscarUnidadesPorNome };
