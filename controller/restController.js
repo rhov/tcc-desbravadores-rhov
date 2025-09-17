@@ -1,3 +1,5 @@
+
+
 /**
  * @swagger
  * /buscarClube:
@@ -114,11 +116,7 @@ router.get('/buscarDesbravador', jwtMiddleware.rest, require('./desbravadorContr
  *         description: Unidade não encontrada
  */
 router.get('/buscarUnidade', jwtMiddleware.rest, require('./clubeController').buscarUnidade);
-const express = require('express');
-const router = express.Router();
-const jwtMiddleware = require('../graphql/middleware/auth');
-const userService = require('../service/userService');
-// const transferService = require('../service/transferService');
+
 
 /**
  * @swagger
