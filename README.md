@@ -38,12 +38,8 @@ API REST e GraphQL para gerenciamento de clubes de desbravadores, com autentica�
 - `id`, `nome` (único)
 - Um clube pode ter várias unidades
 
-### Unidade
-- `id`, `nome` (único por clube), `sexo` (`M` ou `F`), `clubeId`
-- Máximo 10 desbravadores por unidade
-
 ### Desbravador
-- `id`, `nome`, `idade` (10-15), `documento` (único por clube), `sexo` (igual ao da unidade), `unidadeId`
+- `nome`, `idade` (10-15), `documento` (único por clube, numérico, min 6 dígitos), `clubeNome`, `unidade` (string)
 
 ## Autenticação
 - JWT obrigatório para todas as rotas protegidas (REST e GraphQL)
@@ -59,13 +55,10 @@ API REST e GraphQL para gerenciamento de clubes de desbravadores, com autentica�
 - `POST /clubes` — cria clube
 - `GET /clubes` — lista clubes
 
-### Unidades
-- `POST /unidades` — cria unidade
-- `GET /unidades/:clubeId` — lista unidades do clube
 
 ### Desbravadores
 - `POST /desbravadores` — cria desbravador
-- `GET /desbravadores/:unidadeId` — lista desbravadores da unidade
+- `GET /desbravadores` — lista desbravadores (pode filtrar por clube e unidade)
 
 ## Exemplo de uso REST
 
@@ -77,11 +70,9 @@ curl -X POST http://localhost:3000/login -H 'Content-Type: application/json' -d 
 # Criar clube
 curl -X POST http://localhost:3000/clubes -H 'Authorization: Bearer <token>' -H 'Content-Type: application/json' -d '{"nome":"Clube Alpha"}'
 
-# Criar unidade
-curl -X POST http://localhost:3000/unidades -H 'Authorization: Bearer <token>' -H 'Content-Type: application/json' -d '{"nome":"Unidade 1","sexo":"M","clubeId":1}'
 
 # Criar desbravador
-curl -X POST http://localhost:3000/desbravadores -H 'Authorization: Bearer <token>' -H 'Content-Type: application/json' -d '{"nome":"João","idade":12,"documento":"123456789","sexo":"M","unidadeId":1}'
+curl -X POST http://localhost:3000/desbravadores -H 'Authorization: Bearer <token>' -H 'Content-Type: application/json' -d '{"nome":"João","idade":12,"documento":123456,"clubeNome":"Clube Alpha","unidade":"Unidade 1"}'
 ```
 
 
@@ -105,16 +96,13 @@ mutation {
   criarClube(nome: "Clube Alpha") { id nome }
 }
 
-mutation {
-  criarUnidade(nome: "Unidade 1", sexo: "M", clubeId: 1) { id nome sexo }
-}
 
 mutation {
-  criarDesbravador(nome: "João", idade: 12, documento: "123456789", sexo: "M", unidadeId: 1) { id nome idade }
+  criarDesbravador(nome: "João", idade: 12, documento: 123456, clubeNome: "Clube Alpha", unidade: "Unidade 1") { nome idade documento clubeNome unidade }
 }
 
 query {
-  clubes { id nome unidades { id nome } }
+  clubes { nome unidades }
 }
 ```
 
