@@ -11,7 +11,7 @@ module.exports = gql`
     id: ID!
     nome: String!
     unidades: [String!]!
-    desbravadores: [Desbravador!]!
+    desbravadores: [String!]!
   }
 
   type Desbravador {
@@ -36,9 +36,9 @@ module.exports = gql`
 
   type Query {
     users: [User!]!
-    buscarClube(nome: String!, incluirDesbravadores: Boolean, incluirUnidades: Boolean): Clube
-  buscarDesbravador(documento: String!, incluirClube: Boolean, incluirUnidade: Boolean): Desbravador
-    buscarUnidade(clubeNome: String!, unidade: String!, incluirClube: Boolean, incluirDesbravadores: Boolean): Unidade
+  buscarClube(nome: String!): Clube
+  buscarDesbravador(documento: String!): Desbravador
+  buscarUnidade(clubeNome: String!, unidade: String!): Unidade
   }
 
   type Mutation {

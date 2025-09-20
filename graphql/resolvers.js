@@ -17,23 +17,26 @@ module.exports = {
       if (!nome) throw new Error('O parâmetro "nome" do clube é obrigatório.');
       const clube = clubes.find(c => c.nome.toLowerCase() === nome.toLowerCase());
       if (!clube) throw new Error('Clube não encontrado para o nome informado.');
+      const listaDesbravadores = desbravadores
+        .filter(d => d.clubeNome.toLowerCase() === clube.nome.toLowerCase())
+        .map(d => d.nome);
       return {
-        ...clube,
-        desbravadores: incluirDesbravadores ? desbravadores.filter(d => d.clubeNome.toLowerCase() === clube.nome.toLowerCase()) : [],
-        unidades: incluirUnidades ? clube.unidades : [],
+        id: clube.id,
+        nome: clube.nome,
+        unidades: clube.unidades || [],
+        desbravadores: listaDesbravadores,
       };
     },
     buscarDesbravador: (parent, { documento, incluirClube, incluirUnidade }, context) => {
       jwtMiddleware.graphql(context.req);
       if (!documento) throw new Error('O parâmetro "documento" do desbravador é obrigatório.');
       const docStr = String(documento).toLowerCase();
-      if (!/^[0-9]{6,}$/.test(docStr)) throw new Error('O campo documento deve ser um número inteiro com pelo menos 6 dígitos');
       const desbravador = desbravadores.find(d => String(d.documento).toLowerCase() === docStr);
       if (!desbravador) throw new Error('Desbravador não encontrado para o documento informado.');
       return {
         ...desbravador,
-        clube: incluirClube ? clubes.find(c => c.nome.toLowerCase() === desbravador.clubeNome.toLowerCase()) : null,
-        unidade: incluirUnidade ? desbravador.unidade : desbravador.unidade,
+        clube: desbravador.clubeNome,
+        unidade: desbravador.unidade,
       };
     },
     buscarUnidade: (parent, { clubeNome, unidade, incluirClube, incluirDesbravadores }, context) => {
@@ -43,10 +46,13 @@ module.exports = {
       if (!clube) throw new Error('Clube não encontrado');
       const unidadeValida = clube.unidades.find(u => u.toLowerCase() === unidade.toLowerCase());
       if (!unidadeValida) throw new Error('Unidade não encontrada neste clube');
+      const listaDesbravadores = desbravadores
+        .filter(d => d.clubeNome.toLowerCase() === clube.nome.toLowerCase() && d.unidade.toLowerCase() === unidadeValida.toLowerCase())
+        .map(d => ({ nome: d.nome }));
       return {
         nome: unidadeValida,
-        clube: incluirClube ? clube : null,
-        desbravadores: incluirDesbravadores ? desbravadores.filter(d => d.clubeNome.toLowerCase() === clube.nome.toLowerCase() && d.unidade.toLowerCase() === unidadeValida.toLowerCase()) : [],
+        clube: clube.nome,
+        desbravadores: listaDesbravadores,
       };
     },
   },
@@ -56,7 +62,13 @@ module.exports = {
 
     criarClube: (parent, { nome, unidades }, context) => {
       jwtMiddleware.graphql(context.req);
-      return clubeService.criarClube({ nome, unidades });
+      const clube = clubeService.criarClube({ nome, unidades });
+      // Retorna apenas id, nome e unidades
+      return {
+        id: clube.id,
+        nome: clube.nome,
+        unidades: clube.unidades || [],
+      };
     },
     criarDesbravador: (parent, { nome, idade, documento, clubeNome, unidade }, context) => {
       jwtMiddleware.graphql(context.req);

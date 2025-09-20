@@ -11,7 +11,6 @@ function buscarDesbravadoresPorNome(parteNome) {
 function criarDesbravador({ nome, idade, documento, clubeNome, unidade }) {
   if (!nome || !idade || !documento || !clubeNome || !unidade) throw new Error('Todos os campos são obrigatórios');
   const docStr = String(documento).toLowerCase();
-  if (!/^[0-9]{6,}$/.test(docStr)) throw new Error('O campo documento deve ser um número inteiro com pelo menos 6 dígitos');
   if (idade < 10 || idade > 15) throw new Error('Idade deve ser entre 10 e 15 anos');
   // Case insensitive para nome do clube
   const clube = clubes.find(c => c.nome.toLowerCase() === clubeNome.toLowerCase());
