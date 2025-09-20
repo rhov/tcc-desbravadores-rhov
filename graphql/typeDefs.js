@@ -23,8 +23,8 @@ module.exports = gql`
   }
   type Unidade {
     nome: String!
-    clube: Clube
-    desbravadores: [Desbravador!]!
+    clube: String!
+    desbravadores: [String!]!
   }
 
 
@@ -38,7 +38,7 @@ module.exports = gql`
     users: [User!]!
   buscarClube(nome: String!): Clube
   buscarDesbravador(documento: String!): Desbravador
-  buscarUnidade(clubeNome: String!, unidade: String!): Unidade
+  buscarUnidade(clubeNome: String!, unidade: String): [Unidade!]!
   }
 
   type Mutation {

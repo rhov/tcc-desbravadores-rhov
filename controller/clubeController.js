@@ -39,22 +39,35 @@ const buscarClube = (req, res) => {
 };
 
 const buscarUnidade = (req, res) => {
-  const { clubeNome, unidade, incluirClube, incluirDesbravadores } = req.query;
+  const { clubeNome, unidade } = req.query;
   try {
-    if (!clubeNome || !unidade) throw new Error('Os parâmetros "clubeNome" e "unidade" são obrigatórios.');
+    if (!clubeNome) throw new Error('O parâmetro "clubeNome" é obrigatório.');
     const clube = clubeService.listarClubes().find(c => c.nome.toLowerCase() === clubeNome.toLowerCase());
     if (!clube) return res.status(404).json({ error: 'Clube não encontrado' });
-    const unidadeValida = clube.unidades.find(u => u.toLowerCase() === unidade.toLowerCase());
-    if (!unidadeValida) return res.status(404).json({ error: 'Unidade não encontrada neste clube' });
     const desbravadores = require('../model/data').desbravadores;
-    const listaDesbravadores = desbravadores
-      .filter(d => d.clubeNome.toLowerCase() === clube.nome.toLowerCase() && d.unidade.toLowerCase() === unidadeValida.toLowerCase())
-      .map(d => ({ nome: d.nome }));
-    res.json({
-      nome: unidadeValida,
-      clube: clube.nome,
-      desbravadores: listaDesbravadores,
-    });
+    if (!unidade) {
+      // Retorna todas as unidades do clube
+      const unidades = (clube.unidades || []).map(u => ({
+        nome: u,
+        clube: clube.nome,
+        desbravadores: desbravadores
+          .filter(d => d.clubeNome.toLowerCase() === clube.nome.toLowerCase() && d.unidade.toLowerCase() === u.toLowerCase())
+          .map(d => d.nome),
+      }));
+      return res.json(unidades);
+    } else {
+      // Busca unidade específica no clube
+      const unidadeValida = clube.unidades.find(u => u.toLowerCase() === unidade.toLowerCase());
+      if (!unidadeValida) return res.status(404).json({ error: 'Unidade não encontrada neste clube' });
+      const listaDesbravadores = desbravadores
+        .filter(d => d.clubeNome.toLowerCase() === clube.nome.toLowerCase() && d.unidade.toLowerCase() === unidadeValida.toLowerCase())
+        .map(d => d.nome);
+      return res.json([{
+        nome: unidadeValida,
+        clube: clube.nome,
+        desbravadores: listaDesbravadores,
+      }]);
+    }
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
