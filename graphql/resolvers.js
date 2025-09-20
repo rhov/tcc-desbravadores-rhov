@@ -26,7 +26,9 @@ module.exports = {
     buscarDesbravador: (parent, { documento, incluirClube, incluirUnidade }, context) => {
       jwtMiddleware.graphql(context.req);
       if (!documento) throw new Error('O parâmetro "documento" do desbravador é obrigatório.');
-      const desbravador = desbravadores.find(d => d.documento.toLowerCase() === documento.toLowerCase());
+      const docStr = String(documento).toLowerCase();
+      if (!/^[0-9]{6,}$/.test(docStr)) throw new Error('O campo documento deve ser um número inteiro com pelo menos 6 dígitos');
+      const desbravador = desbravadores.find(d => String(d.documento).toLowerCase() === docStr);
       if (!desbravador) throw new Error('Desbravador não encontrado para o documento informado.');
       return {
         ...desbravador,
