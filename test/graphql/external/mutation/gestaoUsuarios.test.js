@@ -7,7 +7,7 @@ require('dotenv').config();
 describe('Clube de Desbravadores - Testes External', () => {
 
 
-    describe.only('Gestão de Usuários', () => {
+    describe('Gestão de Usuários', () => {
 
         it('Registrar usuário', async () => {
             const usuario = { username: faker.person.firstName(), password: "123" };

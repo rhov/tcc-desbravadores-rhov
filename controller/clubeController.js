@@ -3,12 +3,7 @@ const clubeService = require('../service/clubeService');
 const criarClube = (req, res) => {
   try {
     const clube = clubeService.criarClube(req.body);
-    // Retorna apenas id, nome e unidades
-    res.status(201).json({
-      id: clube.id,
-      nome: clube.nome,
-      unidades: clube.unidades || [],
-    });
+    res.status(201).json(clube);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }

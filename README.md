@@ -19,23 +19,41 @@ API REST e GraphQL para gerenciamento de clubes de desbravadores, com autentica�
    ```bash
    npm run dev
    ```
-4. Acesse:
-   - REST: http://localhost:3000
-   - Swagger: http://localhost:3000/api-docs
-   - GraphQL: http://localhost:3000/graphql
+  ## Principais tecnologias e pacotes utilizados
 
-## Estrutura
-- `controller/`: Endpoints REST
-- `service/`: Regras de negócio
-- `model/`: Dados em memória
-- `graphql/`: API GraphQL (typeDefs, resolvers, middleware)
-- `app.js`: Configuração dos apps
-- `server.js`: Inicialização dos servidores
+  - express
+  - apollo-server-express
+  - bcryptjs
+  - jsonwebtoken
+  - dotenv
+  - swagger-jsdoc
+  - swagger-ui-express
+  - mocha, chai, mochawesome, supertest, sinon (testes)
 
-## Entidades e regras de negócio
+  ## Principais ajustes e boas práticas implementadas
 
+  - APIs REST e GraphQL padronizadas: regras de negócio centralizadas em services únicos, sem duplicidade de lógica.
+  - Cadastro de usuário: retorna apenas `id` e `username` (sem token, sem objeto aninhado).
+  - Login: retorna apenas `token` e `username`.
+  - Username case-insensitive: login e cadastro aceitam maiúsculas/minúsculas.
+  - Criar clube: retorna apenas `id`, `nome` e `unidades` (lista de nomes).
+  - Autenticação JWT obrigatória para rotas protegidas.
+  - Swagger disponível em `/api-docs`.
+  - Testes automatizados prontos para Mocha, Chai, Supertest, Sinon.
+  - Dados em memória (perdidos ao reiniciar).
+
+  ## Exemplo de uso REST
+
+  ```bash
+  # Registro (retorno: id, username)
+
+  # Login (retorno: token, username)
 ### Clube
+  # Criar clube (retorno: id, nome, unidades)
 - `id`, `nome` (único)
+  # Criar desbravador
+  curl -X POST http://localhost:3000/desbravadores -H 'Authorization: Bearer <token>' -H 'Content-Type: application/json' -d '{"nome":"João","idade":12,"documento":123456,"clubeNome":"Clube Alpha","unidade":"Unidade 1"}'
+  ```
 - Um clube pode ter várias unidades
 
 ### Desbravador
@@ -63,41 +81,66 @@ API REST e GraphQL para gerenciamento de clubes de desbravadores, com autentica�
 ## Exemplo de uso REST
 
 ```bash
-# Registro e login
-curl -X POST http://localhost:3000/register -H 'Content-Type: application/json' -d '{"username":"admin","password":"123456"}'
-curl -X POST http://localhost:3000/login -H 'Content-Type: application/json' -d '{"username":"admin","password":"123456"}'
+  ## Exemplo de uso GraphQL
 
-# Criar clube
-curl -X POST http://localhost:3000/clubes -H 'Authorization: Bearer <token>' -H 'Content-Type: application/json' -d '{"nome":"Clube Alpha"}'
+  > **Atenção:** Apenas as mutations `login` e `registerUser` recebem username e password. Todas as demais mutations e queries protegidas exigem o token JWT no header:
+  > 
+  > `Authorization: Bearer <token>`
 
-
-# Criar desbravador
-curl -X POST http://localhost:3000/desbravadores -H 'Authorization: Bearer <token>' -H 'Content-Type: application/json' -d '{"nome":"João","idade":12,"documento":123456,"clubeNome":"Clube Alpha","unidade":"Unidade 1"}'
-```
-
-
-## Exemplo de uso GraphQL
-
-> **Atenção:** Apenas as mutations `login` e `registerUser` recebem username e password. Todas as demais mutations e queries protegidas exigem o token JWT no header:
-> 
-> `Authorization: Bearer <token>`
-
-```graphql
-# Login (gera token)
-mutation {
-  login(username: "admin", password: "123456") {
-    token
-    user { id username }
+  ```graphql
+  # Registro (retorno: id, username)
+  mutation {
+    registerUser(username: "admin", password: "123456") {
+      id
+      username
+    }
   }
-}
 
-# As mutations abaixo exigem JWT no header
+  # Login (retorno: token, username)
+  mutation {
+    login(username: "admin", password: "123456") {
+      token
+      username
+    }
+  }
+
+  # Criar clube (retorno: id, nome, unidades)
+  mutation {
+    criarClube(nome: "Clube Alpha") {
+      id
+      nome
+      unidades
+    }
+  }
+
+  # Criar desbravador
+  mutation {
+    criarDesbravador(nome: "João", idade: 12, documento: 123456, clubeNome: "Clube Alpha", unidade: "Unidade 1") {
+      nome
+      idade
+      documento
+      clubeNome
+      unidadeNome
+    }
+  }
+
+  # Listar clubes
+  query {
+    clubes {
+      id
+      nome
+      unidades
+    }
+  }
+  ```
 mutation {
-  criarClube(nome: "Clube Alpha") { id nome }
+  ## Testes
+  - Pronto para Mocha, Chai, Supertest, Sinon (automatizados)
 }
-
-
-mutation {
+  ## Observações
+  - Dados são armazenados em memória (perdidos ao reiniciar)
+  - Estrutura modular e pronta para testes
+  - Documentação Swagger disponível em `/api-docs`
   criarDesbravador(nome: "João", idade: 12, documento: 123456, clubeNome: "Clube Alpha", unidade: "Unidade 1") { nome idade documento clubeNome unidade }
 }
 
