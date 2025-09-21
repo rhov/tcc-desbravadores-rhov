@@ -1,7 +1,7 @@
 const request = require('supertest');
 const { expect } = require('chai');
 const { loginGraphql } = require('../../../factory/requisicoes/login/login');
-const { buscarClube } = require('../../../../controller/clubeController');
+
 let token;
 
 require('dotenv').config();
