@@ -52,8 +52,29 @@ describe('Clube de Desbravadores', () => {
                         documento: ""
                     }
                 });
-            expect(resposta.body.errors[0].message).to.equals(respostaEsperada.message);
-            
+            expect(resposta.body.errors[0].message).to.equals(respostaEsperada.message);     
+        })
+
+        it('Buscar desbravador com número do documento inexistente', async () => {
+            const respostaEsperada = require('../../fixture/respostas/buscarDesbravadorComNumeroDoDocumentoInexistente.json');
+            const resposta = await request(process.env.BASE_URL_GRAPHQL)
+                .post('')
+                .set('Authorization', `Bearer ${token}`)
+                .send({
+                    query: `query BuscarDesbravador($documento: String!) {
+                    buscarDesbravador(documento: $documento) {
+                        nome
+                        idade
+                        documento
+                        clubeNome
+                        unidadeNome
+                    }
+                }`,
+                    variables: {
+                        documento: "documentoNaoEncontrado"
+                    }
+                });
+            expect(resposta.body.errors[0].message).to.equals(respostaEsperada.message);     
         })
     });
 });
