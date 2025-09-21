@@ -22,7 +22,7 @@ const listarDesbravadoresPorUnidade = (req, res) => {
 const buscarDesbravador = (req, res) => {
   const { documento } = req.query;
   try {
-    const result = desbravadorService.buscarDesbravadorPorDocumentoGraphQL(documento);
+    const result = desbravadorService.buscarDesbravadorPorDocumento(documento);
     res.json(result);
   } catch (err) {
     res.status(400).json({ error: err.message });

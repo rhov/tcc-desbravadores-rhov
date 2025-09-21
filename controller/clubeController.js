@@ -21,7 +21,7 @@ const listarClubes = (req, res) => {
 const buscarClube = (req, res) => {
   const { nome } = req.query;
   try {
-    const result = clubeService.buscarClubePorNomeGraphQL(nome);
+    const result = clubeService.buscarClubePorNome(nome);
     // Para REST, desbravadores como array de objetos { nome }
     result.desbravadores = (result.desbravadores || []).map(n => ({ nome: n }));
     res.json(result);
@@ -33,7 +33,7 @@ const buscarClube = (req, res) => {
 const buscarUnidade = (req, res) => {
   const { clubeNome, unidade } = req.query;
   try {
-    const result = clubeService.buscarUnidadeGraphQL(clubeNome, unidade);
+    const result = clubeService.buscarUnidade(clubeNome, unidade);
     res.json(result);
   } catch (err) {
     res.status(400).json({ error: err.message });

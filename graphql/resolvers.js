@@ -14,15 +14,15 @@ module.exports = {
     },
     buscarClube: (parent, { nome }, context) => {
       jwtMiddleware.graphql(context.req);
-      return clubeService.buscarClubePorNomeGraphQL(nome);
+      return clubeService.buscarClubePorNome(nome);
     },
     buscarDesbravador: (parent, { documento }, context) => {
       jwtMiddleware.graphql(context.req);
-      return desbravadorService.buscarDesbravadorPorDocumentoGraphQL(documento);
+      return desbravadorService.buscarDesbravadorPorDocumento(documento);
     },
     buscarUnidade: (parent, { clubeNome, unidade }, context) => {
       jwtMiddleware.graphql(context.req);
-      return clubeService.buscarUnidadeGraphQL(clubeNome, unidade);
+      return clubeService.buscarUnidade(clubeNome, unidade);
     },
   },
   Mutation: {
