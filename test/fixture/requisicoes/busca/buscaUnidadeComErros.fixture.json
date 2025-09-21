@@ -1,13 +1,96 @@
 [
     {
-        "nomeDoTeste": "Buscar unidade (Unidade e Clube) com dados válidos",
+        "nomeDoTeste": "Buscar com dados obrigatórios vazios (clube e unidade)",
         "buscaUnidade": {
             "query": "query BuscarUnidade($unidade: String, $clubeNome: String) { buscarUnidade(unidade: $unidade, clubeNome: $clubeNome) { desbravadores nome clube } }",
             "variables": {
-                "unidade": "melquisedeque",
-                "clubeNome": "sacerdotes"
+                "unidade": "",
+                "clubeNome": ""
             }
         },
-        "resultadoEsperado": null
+        "resultadoEsperado": "Informe pelo menos o nome do clube ou da unidade para buscar."
+    },
+    {
+        "nomeDoTeste": "Buscar com dados obrigatórios vazios (clube)",
+        "buscaUnidade": {
+            "query": "query BuscarUnidade($unidade: String, $clubeNome: String) { buscarUnidade(unidade: $unidade, clubeNome: $clubeNome) { desbravadores nome clube } }",
+            "variables": {
+                "clubeNome": ""
+            }
+        },
+        "resultadoEsperado": "Informe pelo menos o nome do clube ou da unidade para buscar."
+    },
+    {
+        "nomeDoTeste": "Buscar com dados obrigatórios vazios (unidade)",
+        "buscaUnidade": {
+            "query": "query BuscarUnidade($unidade: String, $clubeNome: String) { buscarUnidade(unidade: $unidade, clubeNome: $clubeNome) { desbravadores nome clube } }",
+            "variables": {
+                "unidade": ""
+            }
+        },
+        "resultadoEsperado": "Informe pelo menos o nome do clube ou da unidade para buscar."
+    },
+    {
+        "nomeDoTeste": "Buscar com dados obrigatórios null (clube e unidade)",
+        "buscaUnidade": {
+            "query": "query BuscarUnidade($unidade: String, $clubeNome: String) { buscarUnidade(unidade: $unidade, clubeNome: $clubeNome) { desbravadores nome clube } }",
+            "variables": {
+                "unidade": null,
+                "clubeNome": null
+            }
+        },
+        "resultadoEsperado": "Informe pelo menos o nome do clube ou da unidade para buscar."
+    },
+    {
+        "nomeDoTeste": "Buscar com dados obrigatórios null (clube)",
+        "buscaUnidade": {
+            "query": "query BuscarUnidade($unidade: String, $clubeNome: String) { buscarUnidade(unidade: $unidade, clubeNome: $clubeNome) { desbravadores nome clube } }",
+            "variables": {
+                "clubeNome": null
+            }
+        },
+        "resultadoEsperado": "Informe pelo menos o nome do clube ou da unidade para buscar."
+    },
+    {
+        "nomeDoTeste": "Unidade não encontrada por unidade",
+        "buscaUnidade": {
+            "query": "query BuscarUnidade($unidade: String, $clubeNome: String) { buscarUnidade(unidade: $unidade, clubeNome: $clubeNome) { desbravadores nome clube } }",
+            "variables": {
+                "unidade": "nomeNaoEncontrado"
+            }
+        },
+        "resultadoEsperado": "Nenhuma unidade encontrada com os valores informados."
+    },
+    {
+        "nomeDoTeste": "Unidade não encontrada por clube",
+        "buscaUnidade": {
+            "query": "query BuscarUnidade($unidade: String, $clubeNome: String) { buscarUnidade(unidade: $unidade, clubeNome: $clubeNome) { desbravadores nome clube } }",
+            "variables": {
+                "clubeNome": "nomeNaoEncontrado"
+            }
+        },
+        "resultadoEsperado": "Nenhuma unidade encontrada com os valores informados."
+    },
+    {
+        "nomeDoTeste": "Unidade não encontrada por clube válido e unidade inexsitente",
+        "buscaUnidade": {
+            "query": "query BuscarUnidade($unidade: String, $clubeNome: String) { buscarUnidade(unidade: $unidade, clubeNome: $clubeNome) { desbravadores nome clube } }",
+            "variables": {
+                "clubeNome": "sacerdotes",
+                "unidade": "desconhecida"
+            }
+        },
+        "resultadoEsperado": "Nenhuma unidade encontrada com os valores informados."
+    },
+    {
+        "nomeDoTeste": "Unidade não encontrada por unidade válida e clube inexsitente",
+        "buscaUnidade": {
+            "query": "query BuscarUnidade($unidade: String, $clubeNome: String) { buscarUnidade(unidade: $unidade, clubeNome: $clubeNome) { desbravadores nome clube } }",
+            "variables": {
+                "clubeNome": "desconhecido",
+                "unidade": "Melquisedeque"
+            }
+        },
+        "resultadoEsperado": "Nenhuma unidade encontrada com os valores informados."
     }
 ]
