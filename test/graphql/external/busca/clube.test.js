@@ -1,6 +1,7 @@
 const request = require('supertest');
 const { expect } = require('chai');
 const { loginGraphql } = require('../../../factory/requisicoes/login/login');
+const { buscarClube } = require('../../../../controller/clubeController');
 let token;
 
 require('dotenv').config();
@@ -27,7 +28,18 @@ describe('Clube de Desbravadores - Testes External', () => {
                 .send(buscaClube);
             expect(resposta.body).to.eql(respostaEsperada);
         });
-    });
 
+        it('Buscar clube com nome vazio', async () => {
+            const respostaEsperada = require('../../../fixture/respostas/busca/clube/nomeNaoInformado.fixture.json');
+            buscaClube.variables.nome = '';
+            const resposta = await request(process.env.BASE_URL_GRAPHQL).post('')
+                .set('Authorization', `Bearer ${token}`)
+                .send(buscaClube);
+            expect(resposta.body.errors[0].message).to.equals(respostaEsperada.message);
+        });
+        
+    });
 });
+
+
 
