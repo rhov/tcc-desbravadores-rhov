@@ -52,8 +52,8 @@ describe('Clube de Desbravadores', () => {
                         documento: ""
                     }
                 });
-           // expect(resposta.body.errors[0].message).to.eql(respostaEsperada.message);
-            console.log(resposta.body);
+            expect(resposta.body.errors[0].message).to.equals(respostaEsperada.message);
+            
         })
     });
 });
