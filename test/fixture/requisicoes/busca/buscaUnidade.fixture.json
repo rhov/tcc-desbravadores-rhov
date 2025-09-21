@@ -1,7 +1,0 @@
-{
-    "query": "query BuscarUnidade($unidade: String, $clubeNome: String) { buscarUnidade(unidade: $unidade, clubeNome: $clubeNome) { desbravadores nome clube } }",
-    "variables": {
-        "unidade": "melquisedeque",
-        "clubeNome": "sacerdotes"
-    }
-}
