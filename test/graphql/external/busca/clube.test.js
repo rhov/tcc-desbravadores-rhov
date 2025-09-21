@@ -47,6 +47,15 @@ describe('Clube de Desbravadores - Testes External', () => {
             expect(resposta.body.errors[0].message).to.equals(respostaEsperada.message);
         });
 
+        it('Buscar clube  inexistente', async () => {
+            const respostaEsperada = require('../../../fixture/respostas/busca/clube/nomeNaoEncontrado.json');
+            buscaClube.variables.nome = 'nomeNaoEncontrado';
+            const resposta = await request(process.env.BASE_URL_GRAPHQL).post('')
+                .set('Authorization', `Bearer ${token}`)
+                .send(buscaClube);
+            expect(resposta.body.errors[0].message).to.equals(respostaEsperada.message);
+        });
+
     });
 });
 
