@@ -6,7 +6,7 @@ let token;
 
 require('dotenv').config();
 
-describe('Clube de Desbravadores - Testes External', () => {
+describe.only('Clube de Desbravadores - Testes External', () => {
     beforeEach(async () => {
         token = await loginGraphql();
         buscaUnidade = require('../../../fixture/requisicoes/busca/buscaUnidade.fixture.json');
@@ -38,7 +38,7 @@ describe('Clube de Desbravadores - Testes External', () => {
             expect(resposta.body).to.eql(respostaEsperada);
         });
 
-        it.only('Buscar todas as unidades de um clube com dados válidos ', async () => {
+        it('Buscar todas as unidades de um clube com dados válidos ', async () => {
             const respostaEsperada = require('../../../fixture/respostas/busca/unidade/dadosValidosClube.fixture.json');
             delete buscaUnidade.variables.unidade;
             const resposta = await request(process.env.BASE_URL_GRAPHQL).post('')
@@ -47,18 +47,60 @@ describe('Clube de Desbravadores - Testes External', () => {
             expect(resposta.body).to.eql(respostaEsperada);
         });
 
-        it('Buscar clube com nome vazio', async () => {
-            const respostaEsperada = require('../../../fixture/respostas/busca/clube/nomeNaoInformado.fixture.json');
-            buscaClube.variables.nome = '';
+        it('Buscar com dados obrigatórios vazios (clube e unidade)', async () => {
+            const respostaEsperada = require('../../../fixture/respostas/busca/unidade/dadosNaoInformados.fixture.json');
+            buscaUnidade.variables.unidade = '';
+            buscaUnidade.variables.clubeNome = '';
             const resposta = await request(process.env.BASE_URL_GRAPHQL).post('')
                 .set('Authorization', `Bearer ${token}`)
                 .send(buscaUnidade);
             expect(resposta.body.errors[0].message).to.equals(respostaEsperada.message);
         });
 
-        it('Buscar clube com nome null', async () => {
-            const respostaEsperada = require('../../../fixture/respostas/busca/clube/valorNull.fixture.json');
-            buscaClube.variables.nome = null;
+        it('Buscar com dados obrigatórios vazios (clube)', async () => {
+            const respostaEsperada = require('../../../fixture/respostas/busca/unidade/dadosNaoInformados.fixture.json');
+            delete buscaUnidade.variables.unidade;
+            buscaUnidade.variables.clubeNome = '';
+            const resposta = await request(process.env.BASE_URL_GRAPHQL).post('')
+                .set('Authorization', `Bearer ${token}`)
+                .send(buscaUnidade);
+            expect(resposta.body.errors[0].message).to.equals(respostaEsperada.message);
+        });
+
+        it('Buscar com dados obrigatórios vazios (unidade)', async () => {
+            const respostaEsperada = require('../../../fixture/respostas/busca/unidade/dadosNaoInformados.fixture.json');
+            buscaUnidade.variables.unidade = '';
+            delete buscaUnidade.variables.clubeNome;
+            const resposta = await request(process.env.BASE_URL_GRAPHQL).post('')
+                .set('Authorization', `Bearer ${token}`)
+                .send(buscaUnidade);
+            expect(resposta.body.errors[0].message).to.equals(respostaEsperada.message);
+        });
+
+        it('Buscar com dados obrigatórios null (clube e unidade)', async () => {
+            const respostaEsperada = require('../../../fixture/respostas/busca/unidade/dadosNaoInformados.fixture.json');
+            buscaUnidade.variables.unidade = null;
+            buscaUnidade.variables.clubeNome = null;
+            const resposta = await request(process.env.BASE_URL_GRAPHQL).post('')
+                .set('Authorization', `Bearer ${token}`)
+                .send(buscaUnidade);
+            expect(resposta.body.errors[0].message).to.equals(respostaEsperada.message);
+        });
+
+        it('Buscar com dados obrigatórios null (clube)', async () => {
+            const respostaEsperada = require('../../../fixture/respostas/busca/unidade/dadosNaoInformados.fixture.json');
+            delete buscaUnidade.variables.unidade;
+            buscaUnidade.variables.clubeNome = null;
+            const resposta = await request(process.env.BASE_URL_GRAPHQL).post('')
+                .set('Authorization', `Bearer ${token}`)
+                .send(buscaUnidade);
+            expect(resposta.body.errors[0].message).to.equals(respostaEsperada.message);
+        });
+
+        it('Buscar com dados obrigatórios null (unidade)', async () => {
+            const respostaEsperada = require('../../../fixture/respostas/busca/unidade/dadosNaoInformados.fixture.json');
+            buscaUnidade.variables.unidade = null;
+            delete buscaUnidade.variables.clubeNome;
             const resposta = await request(process.env.BASE_URL_GRAPHQL).post('')
                 .set('Authorization', `Bearer ${token}`)
                 .send(buscaUnidade);
@@ -67,7 +109,7 @@ describe('Clube de Desbravadores - Testes External', () => {
 
         it('Buscar clube  inexistente', async () => {
             const respostaEsperada = require('../../../fixture/respostas/busca/clube/nomeNaoEncontrado.json');
-            buscaClube.variables.nome = 'nomeNaoEncontrado';
+            buscaUnidade.variables.nome = 'nomeNaoEncontrado';
             const resposta = await request(process.env.BASE_URL_GRAPHQL).post('')
                 .set('Authorization', `Bearer ${token}`)
                 .send(buscaUnidade);
