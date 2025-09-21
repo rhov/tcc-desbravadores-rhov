@@ -31,7 +31,7 @@ module.exports = gql`
 
   type AuthPayload {
     token: String!
-    user: User!
+    username: String!
   }
 
   type RegisterPayload {
