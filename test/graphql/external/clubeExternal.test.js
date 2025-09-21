@@ -33,5 +33,45 @@ describe('Clube de Desbravadores', () => {
                 });
             expect(resposta.body).to.eql(respostaEsperada);
         })
+        it('Buscar desbravador sem informar o número do documento', async () => {
+            const respostaEsperada = require('../../fixture/respostas/.json');
+            const resposta = await request(process.env.BASE_URL_GRAPHQL)
+                .post('')
+                .set('Authorization', `Bearer ${token}`)
+                .send({
+                    query: `query BuscarDesbravador($documento: String!) {
+                    buscarDesbravador(documento: $documento) {
+                        nome
+                        idade
+                        documento
+                        clubeNome
+                        unidadeNome
+                    }
+                }`,
+                    variables: {
+                        documento: null
+                    }
+                });
+            expect(resposta.body).to.eql(respostaEsperada);
+        })
     });
 });
+
+
+/**
+ *     buscarDesbravador: (parent, { documento }, context) => {
+      jwtMiddleware.graphql(context.req);
+      if (!documento) throw new Error('Por gentileza, informe o documento do desbravador para que possamos realizar a busca.');
+      const docStr = String(documento).toLowerCase();
+      const desbravador = desbravadores.find(d => String(d.documento).toLowerCase() === docStr);
+      if (!desbravador) throw new Error('Não encontramos nenhum desbravador com o documento informado. Por favor, revise e tente novamente.');
+      return {
+        nome: desbravador.nome,
+        idade: desbravador.idade,
+        documento: desbravador.documento,
+        clubeNome: desbravador.clubeNome,
+        unidadeNome: desbravador.unidade,
+      };
+    },
+ * 
+ */
