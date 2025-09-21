@@ -88,7 +88,7 @@ describe('Clube de Desbravadores - Testes External', () => {
             expect(resposta.body.errors[0].message).to.eql("Dados obrigatórios");
         });
 
-        it('Realizar login', async () => {
+        it('Realizar login com credenciais válidas', async () => {
             const usuario = require('../../../helpers/login/users.json');
             const login = await request(process.env.BASE_URL_GRAPHQL)
                 .post('')
@@ -107,8 +107,64 @@ describe('Clube de Desbravadores - Testes External', () => {
             expect(login.body.data.login.token).to.not.be.empty;
 
         });
+        it('Realizar login com credenciais inválidas (username e password)', async () => {
+            const usuario = { username: faker.person.firstName(), password: faker.person.jobTitle() };
+            const login = await request(process.env.BASE_URL_GRAPHQL)
+                .post('')
+                .send({
+                    query: `mutation Mutation($username: String!, $password: String!) {
+                                login(username: $username, password: $password) {
+                                    token
+                                }
+                            }`,
+                    variables: {
+                        username: usuario.username,
+                        password: usuario.password
+                    }
+                })
 
-        
+            expect(login.body.errors[0].message).to.eql("Credenciais inválidas");
+
+        });
+        it('Realizar login com credenciais inválidas (username)', async () => {
+            const usuario = { username: faker.person.firstName(), password: "123" };
+            const login = await request(process.env.BASE_URL_GRAPHQL)
+                .post('')
+                .send({
+                    query: `mutation Mutation($username: String!, $password: String!) {
+                                login(username: $username, password: $password) {
+                                    token
+                                }
+                            }`,
+                    variables: {
+                        username: usuario.username,
+                        password: usuario.password
+                    }
+                })
+
+            expect(login.body.errors[0].message).to.eql("Credenciais inválidas");
+
+        });
+        it('Realizar login com credenciais inválidas (password)', async () => {
+            const login = await request(process.env.BASE_URL_GRAPHQL)
+                .post('')
+                .send({
+                    query: `mutation Mutation($username: String!, $password: String!) {
+                                login(username: $username, password: $password) {
+                                    token
+                                }
+                            }`,
+                    variables: {
+                        username: "rodrigo",
+                        password: "1234"
+                    }
+                })
+
+            expect(login.body.errors[0].message).to.eql("Credenciais inválidas");
+
+        });
+
+
         /*
                 buscaUnidadeDadosValidos.forEach(teste => {
                     it(`${teste.nomeDoTeste}`, async () => {
