@@ -38,7 +38,7 @@ module.exports = gql`
     users: [User!]!
   buscarClube(nome: String!): Clube
   buscarDesbravador(documento: String!): Desbravador
-  buscarUnidade(clubeNome: String!, unidade: String): [Unidade!]!
+  buscarUnidade(clubeNome: String, unidade: String): [Unidade!]!
   }
 
   type Mutation {

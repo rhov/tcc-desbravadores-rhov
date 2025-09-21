@@ -1,0 +1,46 @@
+{
+  "data": {
+    "buscarUnidade": [
+      {
+        "desbravadores": [
+          "Nycollas",
+          "Gabriel",
+          "Dyllan",
+          "Denilson"
+        ],
+        "nome": "Melquisedeque",
+        "clube": "Sacerdotes"
+      },
+      {
+        "desbravadores": [
+          "Moisés",
+          "Lucas",
+          "Pedro",
+          "Samuel"
+        ],
+        "nome": "Pedra de Onix",
+        "clube": "Sacerdotes"
+      },
+      {
+        "desbravadores": [
+          "Victoria",
+          "Bia",
+          "Ana",
+          "Larissa"
+        ],
+        "nome": "Candelabro de Ouro",
+        "clube": "Sacerdotes"
+      },
+      {
+        "desbravadores": [
+          "Carine",
+          "Juliana",
+          "Beatriz",
+          "Marina"
+        ],
+        "nome": "Shekinah",
+        "clube": "Sacerdotes"
+      }
+    ]
+  }
+}
