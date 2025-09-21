@@ -21,9 +21,9 @@ const listarClubes = (req, res) => {
 const buscarClube = (req, res) => {
   const { nome } = req.query;
   try {
-    if (!nome) throw new Error('O parâmetro "nome" do clube é obrigatório.');
+    if (!nome) throw new Error('Por favor, informe o nome do clube para realizar a busca.');
     const clube = clubeService.listarClubes().find(c => c.nome.toLowerCase() === nome.toLowerCase());
-    if (!clube) return res.status(404).json({ error: 'Clube não encontrado' });
+    if (!clube) return res.status(404).json({ error: 'Nenhum clube foi encontrado com o nome informado.' });
     const listaDesbravadores = require('../model/data').desbravadores
       .filter(d => d.clubeNome.toLowerCase() === clube.nome.toLowerCase())
       .map(d => ({ nome: d.nome }));
@@ -41,9 +41,9 @@ const buscarClube = (req, res) => {
 const buscarUnidade = (req, res) => {
   const { clubeNome, unidade } = req.query;
   try {
-    if (!clubeNome) throw new Error('O parâmetro "clubeNome" é obrigatório.');
+    if (!clubeNome) throw new Error('Por favor, informe o nome do clube para buscar as unidades.');
     const clube = clubeService.listarClubes().find(c => c.nome.toLowerCase() === clubeNome.toLowerCase());
-    if (!clube) return res.status(404).json({ error: 'Clube não encontrado' });
+    if (!clube) return res.status(404).json({ error: 'Nenhum clube foi encontrado com o nome informado.' });
     const desbravadores = require('../model/data').desbravadores;
     if (!unidade) {
       // Retorna todas as unidades do clube
@@ -58,7 +58,7 @@ const buscarUnidade = (req, res) => {
     } else {
       // Busca unidade específica no clube
       const unidadeValida = clube.unidades.find(u => u.toLowerCase() === unidade.toLowerCase());
-      if (!unidadeValida) return res.status(404).json({ error: 'Unidade não encontrada neste clube' });
+      if (!unidadeValida) return res.status(404).json({ error: 'Nenhuma unidade foi encontrada com o nome informado neste clube.' });
       const listaDesbravadores = desbravadores
         .filter(d => d.clubeNome.toLowerCase() === clube.nome.toLowerCase() && d.unidade.toLowerCase() === unidadeValida.toLowerCase())
         .map(d => d.nome);

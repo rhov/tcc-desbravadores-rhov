@@ -24,11 +24,11 @@ const listarDesbravadoresPorUnidade = (req, res) => {
 const buscarDesbravador = (req, res) => {
   const { documento } = req.query;
   try {
-    if (!documento) throw new Error('O parâmetro "documento" do desbravador é obrigatório.');
+    if (!documento) throw new Error('Por favor, informe o documento do desbravador para realizar a busca.');
     const docStr = String(documento).toLowerCase();
     const desbravadores = require('../model/data').desbravadores;
     const desbravador = desbravadores.find(d => String(d.documento).toLowerCase() === docStr);
-    if (!desbravador) return res.status(404).json({ error: 'Desbravador não encontrado' });
+    if (!desbravador) return res.status(404).json({ error: 'Nenhum desbravador foi encontrado com o documento informado.' });
     res.json({
       nome: desbravador.nome,
       idade: desbravador.idade,

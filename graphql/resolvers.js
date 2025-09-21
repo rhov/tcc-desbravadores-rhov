@@ -14,9 +14,9 @@ module.exports = {
     },
     buscarClube: (parent, { nome }, context) => {
       jwtMiddleware.graphql(context.req);
-      if (!nome) throw new Error('O parâmetro "nome" do clube é obrigatório.');
+      if (!nome) throw new Error('Por gentileza, informe o nome do clube para que possamos realizar a busca.');
       const clube = clubes.find(c => c.nome.toLowerCase() === nome.toLowerCase());
-      if (!clube) throw new Error('Clube não encontrado para o nome informado.');
+      if (!clube) throw new Error('Não encontramos nenhum clube com o nome informado. Por favor, revise e tente novamente.');
       const listaDesbravadores = desbravadores
         .filter(d => d.clubeNome.toLowerCase() === clube.nome.toLowerCase())
         .map(d => d.nome);
@@ -29,10 +29,10 @@ module.exports = {
     },
     buscarDesbravador: (parent, { documento }, context) => {
       jwtMiddleware.graphql(context.req);
-      if (!documento) throw new Error('O parâmetro "documento" do desbravador é obrigatório.');
+      if (!documento) throw new Error('Por gentileza, informe o documento do desbravador para que possamos realizar a busca.');
       const docStr = String(documento).toLowerCase();
       const desbravador = desbravadores.find(d => String(d.documento).toLowerCase() === docStr);
-      if (!desbravador) throw new Error('Desbravador não encontrado para o documento informado.');
+      if (!desbravador) throw new Error('Não encontramos nenhum desbravador com o documento informado. Por favor, revise e tente novamente.');
       return {
         nome: desbravador.nome,
         idade: desbravador.idade,
@@ -43,9 +43,9 @@ module.exports = {
     },
     buscarUnidade: (parent, { clubeNome, unidade }, context) => {
       jwtMiddleware.graphql(context.req);
-      if (!clubeNome) throw new Error('O parâmetro "clubeNome" é obrigatório.');
+      if (!clubeNome) throw new Error('Por gentileza, informe o nome do clube para que possamos buscar as unidades.');
       const clube = clubes.find(c => c.nome.toLowerCase() === clubeNome.toLowerCase());
-      if (!clube) throw new Error('Clube não encontrado');
+      if (!clube) throw new Error('Não encontramos nenhum clube com o nome informado. Por favor, revise e tente novamente.');
       if (!unidade) {
         // Retorna todas as unidades do clube
         return (clube.unidades || []).map(u => ({
@@ -58,7 +58,7 @@ module.exports = {
       } else {
         // Busca unidade específica no clube
         const unidadeValida = clube.unidades.find(u => u.toLowerCase() === unidade.toLowerCase());
-        if (!unidadeValida) throw new Error('Unidade não encontrada neste clube');
+        if (!unidadeValida) throw new Error('Não encontramos nenhuma unidade com o nome informado neste clube. Por favor, revise e tente novamente.');
         return [{
           nome: unidadeValida,
           clube: clube.nome,
