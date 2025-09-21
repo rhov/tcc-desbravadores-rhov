@@ -19,7 +19,7 @@ const listarClubes = (req, res) => {
 };
 
 const buscarClube = (req, res) => {
-  const { nome, incluirDesbravadores, incluirUnidades } = req.query;
+  const { nome } = req.query;
   try {
     if (!nome) throw new Error('O parâmetro "nome" do clube é obrigatório.');
     const clube = clubeService.listarClubes().find(c => c.nome.toLowerCase() === nome.toLowerCase());

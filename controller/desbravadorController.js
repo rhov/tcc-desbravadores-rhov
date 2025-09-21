@@ -22,18 +22,19 @@ const listarDesbravadoresPorUnidade = (req, res) => {
 };
 
 const buscarDesbravador = (req, res) => {
-  const { documento, incluirClube, incluirUnidade } = req.query;
+  const { documento } = req.query;
   try {
     if (!documento) throw new Error('O parâmetro "documento" do desbravador é obrigatório.');
     const docStr = String(documento).toLowerCase();
     const desbravadores = require('../model/data').desbravadores;
-    const clubes = require('../model/data').clubes;
     const desbravador = desbravadores.find(d => String(d.documento).toLowerCase() === docStr);
     if (!desbravador) return res.status(404).json({ error: 'Desbravador não encontrado' });
     res.json({
-      ...desbravador,
-      clube: desbravador.clubeNome,
-      unidade: desbravador.unidade,
+      nome: desbravador.nome,
+      idade: desbravador.idade,
+      documento: desbravador.documento,
+      clubeNome: desbravador.clubeNome,
+      unidadeNome: desbravador.unidade,
     });
   } catch (err) {
     res.status(400).json({ error: err.message });

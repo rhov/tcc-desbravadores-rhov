@@ -12,7 +12,7 @@ module.exports = {
       jwtMiddleware.graphql(context.req);
       return userService.getUsersGraphQL();
     },
-    buscarClube: (parent, { nome, incluirDesbravadores, incluirUnidades }, context) => {
+    buscarClube: (parent, { nome }, context) => {
       jwtMiddleware.graphql(context.req);
       if (!nome) throw new Error('O parâmetro "nome" do clube é obrigatório.');
       const clube = clubes.find(c => c.nome.toLowerCase() === nome.toLowerCase());
@@ -27,19 +27,21 @@ module.exports = {
         desbravadores: listaDesbravadores,
       };
     },
-    buscarDesbravador: (parent, { documento, incluirClube, incluirUnidade }, context) => {
+    buscarDesbravador: (parent, { documento }, context) => {
       jwtMiddleware.graphql(context.req);
       if (!documento) throw new Error('O parâmetro "documento" do desbravador é obrigatório.');
       const docStr = String(documento).toLowerCase();
       const desbravador = desbravadores.find(d => String(d.documento).toLowerCase() === docStr);
       if (!desbravador) throw new Error('Desbravador não encontrado para o documento informado.');
       return {
-        ...desbravador,
-        clube: desbravador.clubeNome,
-        unidade: desbravador.unidade,
+        nome: desbravador.nome,
+        idade: desbravador.idade,
+        documento: desbravador.documento,
+        clubeNome: desbravador.clubeNome,
+        unidadeNome: desbravador.unidade,
       };
     },
-    buscarUnidade: (parent, { clubeNome, unidade, incluirClube, incluirDesbravadores }, context) => {
+    buscarUnidade: (parent, { clubeNome, unidade }, context) => {
       jwtMiddleware.graphql(context.req);
       if (!clubeNome) throw new Error('O parâmetro "clubeNome" é obrigatório.');
       const clube = clubes.find(c => c.nome.toLowerCase() === clubeNome.toLowerCase());
@@ -90,14 +92,7 @@ module.exports = {
     unidades: (parent) => parent.unidades || [],
     desbravadores: (parent) => parent.desbravadores || [],
   },
-  Desbravador: {
-    clube: (parent) => {
-      const { clubes } = require('../model/data');
-      if (!parent.clubeNome) return null;
-      return clubes.find(c => c.nome.toLowerCase() === parent.clubeNome.toLowerCase()) || null;
-    },
-    unidade: (parent) => parent.unidade,
-  },
+  // Desbravador não precisa de resolver customizado para clube: retorna apenas string
   Unidade: {
     clube: (parent) => parent.clube || null,
     desbravadores: (parent) => parent.desbravadores || [],

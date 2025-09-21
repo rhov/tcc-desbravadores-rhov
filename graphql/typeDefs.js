@@ -17,9 +17,9 @@ module.exports = gql`
   type Desbravador {
     nome: String!
     idade: Int!
-  documento: String!
-    clube: Clube
-    unidade: String!
+    documento: String!
+    clubeNome: String!
+    unidadeNome: String!
   }
   type Unidade {
     nome: String!
