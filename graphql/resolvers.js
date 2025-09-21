@@ -14,59 +14,15 @@ module.exports = {
     },
     buscarClube: (parent, { nome }, context) => {
       jwtMiddleware.graphql(context.req);
-      if (!nome) throw new Error('Por gentileza, informe o nome do clube para que possamos realizar a busca.');
-      const clube = clubes.find(c => c.nome.toLowerCase() === nome.toLowerCase());
-      if (!clube) throw new Error('Não encontramos nenhum clube com o nome informado. Por favor, revise e tente novamente.');
-      const listaDesbravadores = desbravadores
-        .filter(d => d.clubeNome.toLowerCase() === clube.nome.toLowerCase())
-        .map(d => d.nome);
-      return {
-        id: clube.id,
-        nome: clube.nome,
-        unidades: clube.unidades || [],
-        desbravadores: listaDesbravadores,
-      };
+      return clubeService.buscarClubePorNomeGraphQL(nome);
     },
     buscarDesbravador: (parent, { documento }, context) => {
       jwtMiddleware.graphql(context.req);
-      if (!documento) throw new Error('Por gentileza, informe o documento do desbravador para que possamos realizar a busca.');
-      const docStr = String(documento).toLowerCase();
-      const desbravador = desbravadores.find(d => String(d.documento).toLowerCase() === docStr);
-      if (!desbravador) throw new Error('Não encontramos nenhum desbravador com o documento informado. Por favor, revise e tente novamente.');
-      return {
-        nome: desbravador.nome,
-        idade: desbravador.idade,
-        documento: desbravador.documento,
-        clubeNome: desbravador.clubeNome,
-        unidadeNome: desbravador.unidade,
-      };
+      return desbravadorService.buscarDesbravadorPorDocumentoGraphQL(documento);
     },
     buscarUnidade: (parent, { clubeNome, unidade }, context) => {
       jwtMiddleware.graphql(context.req);
-      if (!clubeNome) throw new Error('Por gentileza, informe o nome do clube para que possamos buscar as unidades.');
-      const clube = clubes.find(c => c.nome.toLowerCase() === clubeNome.toLowerCase());
-      if (!clube) throw new Error('Não encontramos nenhum clube com o nome informado. Por favor, revise e tente novamente.');
-      if (!unidade) {
-        // Retorna todas as unidades do clube
-        return (clube.unidades || []).map(u => ({
-          nome: u,
-          clube: clube.nome,
-          desbravadores: desbravadores
-            .filter(d => d.clubeNome.toLowerCase() === clube.nome.toLowerCase() && d.unidade.toLowerCase() === u.toLowerCase())
-            .map(d => d.nome),
-        }));
-      } else {
-        // Busca unidade específica no clube
-        const unidadeValida = clube.unidades.find(u => u.toLowerCase() === unidade.toLowerCase());
-        if (!unidadeValida) throw new Error('Não encontramos nenhuma unidade com o nome informado neste clube. Por favor, revise e tente novamente.');
-        return [{
-          nome: unidadeValida,
-          clube: clube.nome,
-          desbravadores: desbravadores
-            .filter(d => d.clubeNome.toLowerCase() === clube.nome.toLowerCase() && d.unidade.toLowerCase() === unidadeValida.toLowerCase())
-            .map(d => d.nome),
-        }];
-      }
+      return clubeService.buscarUnidadeGraphQL(clubeNome, unidade);
     },
   },
   Mutation: {

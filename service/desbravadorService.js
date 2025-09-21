@@ -39,3 +39,20 @@ function listarDesbravadoresPorUnidade(clubeNome, unidade) {
 }
 
 module.exports = { criarDesbravador, listarDesbravadoresPorUnidade, buscarDesbravadoresPorNome };
+// Busca desbravador por documento para GraphQL (centraliza regras e mensagens)
+function buscarDesbravadorPorDocumentoGraphQL(documento) {
+  if (!documento) throw new Error('Por gentileza, informe o documento do desbravador para que possamos realizar a busca.');
+  const docStr = String(documento).toLowerCase();
+  const { desbravadores } = require('../model/data');
+  const desbravador = desbravadores.find(d => String(d.documento).toLowerCase() === docStr);
+  if (!desbravador) throw new Error('Não encontramos nenhum desbravador com o documento informado. Por favor, revise e tente novamente.');
+  return {
+    nome: desbravador.nome,
+    idade: desbravador.idade,
+    documento: desbravador.documento,
+    clubeNome: desbravador.clubeNome,
+    unidadeNome: desbravador.unidade,
+  };
+}
+
+module.exports = { criarDesbravador, listarDesbravadoresPorUnidade, buscarDesbravadoresPorNome, buscarDesbravadorPorDocumentoGraphQL };

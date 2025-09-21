@@ -5,7 +5,7 @@ let token;
 
 require('dotenv').config();
 
-describe.only('Clube de Desbravadores - Testes External', () => {
+describe('Clube de Desbravadores - Testes External', () => {
     beforeEach(async () => {
         token = await loginGraphql();
         buscaClube = require('../../../fixture/requisicoes/busca/buscaClube.fixture.json');

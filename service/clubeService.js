@@ -41,3 +41,51 @@ function buscarUnidadesPorNome(clubeId, parteNome) {
 }
 
 module.exports = { criarClube, listarClubes, buscarClubesPorNome, buscarUnidadesPorNome };
+// Busca clube por nome para GraphQL (centraliza regras e mensagens)
+function buscarClubePorNomeGraphQL(nome) {
+  if (!nome) throw new Error('Por gentileza, informe o nome do clube para que possamos realizar a busca.');
+  const clube = clubes.find(c => c.nome.toLowerCase() === nome.toLowerCase());
+  if (!clube) throw new Error('Não encontramos nenhum clube com o nome informado. Por favor, revise e tente novamente.');
+  // Lista desbravadores do clube
+  const { desbravadores } = require('../model/data');
+  const listaDesbravadores = desbravadores
+    .filter(d => d.clubeNome.toLowerCase() === clube.nome.toLowerCase())
+    .map(d => d.nome);
+  return {
+    id: clube.id,
+    nome: clube.nome,
+    unidades: clube.unidades || [],
+    desbravadores: listaDesbravadores,
+  };
+}
+
+// Busca unidade para GraphQL (centraliza regras e mensagens)
+function buscarUnidadeGraphQL(clubeNome, unidade) {
+  if (!clubeNome) throw new Error('Por gentileza, informe o nome do clube para que possamos buscar as unidades.');
+  const clube = clubes.find(c => c.nome.toLowerCase() === clubeNome.toLowerCase());
+  if (!clube) throw new Error('Não encontramos nenhum clube com o nome informado. Por favor, revise e tente novamente.');
+  const { desbravadores } = require('../model/data');
+  if (!unidade) {
+    // Retorna todas as unidades do clube
+    return (clube.unidades || []).map(u => ({
+      nome: u,
+      clube: clube.nome,
+      desbravadores: desbravadores
+        .filter(d => d.clubeNome.toLowerCase() === clube.nome.toLowerCase() && d.unidade.toLowerCase() === u.toLowerCase())
+        .map(d => d.nome),
+    }));
+  } else {
+    // Busca unidade específica no clube
+    const unidadeValida = clube.unidades.find(u => u.toLowerCase() === unidade.toLowerCase());
+    if (!unidadeValida) throw new Error('Não encontramos nenhuma unidade com o nome informado neste clube. Por favor, revise e tente novamente.');
+    return [{
+      nome: unidadeValida,
+      clube: clube.nome,
+      desbravadores: desbravadores
+        .filter(d => d.clubeNome.toLowerCase() === clube.nome.toLowerCase() && d.unidade.toLowerCase() === unidadeValida.toLowerCase())
+        .map(d => d.nome),
+    }];
+  }
+}
+
+module.exports = { criarClube, listarClubes, buscarClubesPorNome, buscarUnidadesPorNome, buscarClubePorNomeGraphQL, buscarUnidadeGraphQL };
