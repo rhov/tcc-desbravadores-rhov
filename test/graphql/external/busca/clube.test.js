@@ -14,7 +14,7 @@ describe('Clube de Desbravadores - Testes External', () => {
 
     describe('Busca Clube', () => {
 
-        it('Busca clube sem token', async () => {
+        it('Buscar clube sem token', async () => {
             const respostaEsperada = require('../../../fixture/respostas/token/tokenAusente.fixture.json');
             const resposta = await request(process.env.BASE_URL_GRAPHQL).post('')
                 .send(buscaClube);
@@ -37,7 +37,16 @@ describe('Clube de Desbravadores - Testes External', () => {
                 .send(buscaClube);
             expect(resposta.body.errors[0].message).to.equals(respostaEsperada.message);
         });
-        
+
+        it('Buscar clube com nome null', async () => {
+            const respostaEsperada = require('../../../fixture/respostas/busca/clube/valorNull.fixture.json');
+            buscaClube.variables.nome = null;
+            const resposta = await request(process.env.BASE_URL_GRAPHQL).post('')
+                .set('Authorization', `Bearer ${token}`)
+                .send(buscaClube);
+            expect(resposta.body.errors[0].message).to.equals(respostaEsperada.message);
+        });
+
     });
 });
 

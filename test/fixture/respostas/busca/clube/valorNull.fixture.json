@@ -1,0 +1,3 @@
+    {
+      "message": "Variable \"$nome\" of non-null type \"String!\" must not be null."
+    }

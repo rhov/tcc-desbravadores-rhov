@@ -26,7 +26,11 @@ const buscarClube = (req, res) => {
     result.desbravadores = (result.desbravadores || []).map(n => ({ nome: n }));
     res.json(result);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    if (err.message.includes('não encontramos') || err.message.toLowerCase().includes('inexistente')) {
+      res.status(404).json({ error: err.message });
+    } else {
+      res.status(400).json({ error: err.message });
+    }
   }
 };
 
@@ -36,7 +40,11 @@ const buscarUnidade = (req, res) => {
     const result = clubeService.buscarUnidade(clubeNome, unidade);
     res.json(result);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    if (err.message.toLowerCase().includes('inexistente')) {
+      res.status(404).json({ error: err.message });
+    } else {
+      res.status(400).json({ error: err.message });
+    }
   }
 };
 
