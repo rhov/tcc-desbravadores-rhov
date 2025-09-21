@@ -3,6 +3,7 @@ const desbravadorService = require('../service/desbravadorService');
 const criarDesbravador = (req, res) => {
   try {
     const { documento, ...rest } = req.body;
+    if (documento === undefined || documento === null || documento === '') throw new Error('Por favor, informe o documento do desbravador para realizar o cadastro.');
     const docStr = String(documento).toLowerCase();
     const desbravador = desbravadorService.criarDesbravador({ ...rest, documento: docStr });
     res.status(201).json(desbravador);
@@ -24,7 +25,7 @@ const listarDesbravadoresPorUnidade = (req, res) => {
 const buscarDesbravador = (req, res) => {
   const { documento } = req.query;
   try {
-    if (!documento) throw new Error('Por favor, informe o documento do desbravador para realizar a busca.');
+    if (documento === undefined || documento === null || documento === '') throw new Error('Por favor, informe o documento do desbravador para realizar a busca.');
     const docStr = String(documento).toLowerCase();
     const desbravadores = require('../model/data').desbravadores;
     const desbravador = desbravadores.find(d => String(d.documento).toLowerCase() === docStr);

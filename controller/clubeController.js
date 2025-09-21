@@ -21,7 +21,7 @@ const listarClubes = (req, res) => {
 const buscarClube = (req, res) => {
   const { nome } = req.query;
   try {
-    if (!nome) throw new Error('Por favor, informe o nome do clube para realizar a busca.');
+    if (nome === undefined || nome === null || nome === '') throw new Error('Por favor, informe o nome do clube para realizar a busca.');
     const clube = clubeService.listarClubes().find(c => c.nome.toLowerCase() === nome.toLowerCase());
     if (!clube) return res.status(404).json({ error: 'Nenhum clube foi encontrado com o nome informado.' });
     const listaDesbravadores = require('../model/data').desbravadores
@@ -41,7 +41,7 @@ const buscarClube = (req, res) => {
 const buscarUnidade = (req, res) => {
   const { clubeNome, unidade } = req.query;
   try {
-    if (!clubeNome) throw new Error('Por favor, informe o nome do clube para buscar as unidades.');
+    if (clubeNome === undefined || clubeNome === null || clubeNome === '') throw new Error('Por favor, informe o nome do clube para buscar as unidades.');
     const clube = clubeService.listarClubes().find(c => c.nome.toLowerCase() === clubeNome.toLowerCase());
     if (!clube) return res.status(404).json({ error: 'Nenhum clube foi encontrado com o nome informado.' });
     const desbravadores = require('../model/data').desbravadores;
