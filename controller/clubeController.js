@@ -3,7 +3,12 @@ const clubeService = require('../service/clubeService');
 const criarClube = (req, res) => {
   try {
     const clube = clubeService.criarClube(req.body);
-    res.status(201).json(clube);
+    // Retorna apenas id, nome e unidades
+    res.status(201).json({
+      id: clube.id,
+      nome: clube.nome,
+      unidades: clube.unidades || [],
+    });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -14,15 +19,19 @@ const listarClubes = (req, res) => {
 };
 
 const buscarClube = (req, res) => {
-  const { nome, incluirDesbravadores, incluirUnidades } = req.query;
+  const { nome } = req.query;
   try {
     if (!nome) throw new Error('O parâmetro "nome" do clube é obrigatório.');
     const clube = clubeService.listarClubes().find(c => c.nome.toLowerCase() === nome.toLowerCase());
     if (!clube) return res.status(404).json({ error: 'Clube não encontrado' });
+    const listaDesbravadores = require('../model/data').desbravadores
+      .filter(d => d.clubeNome.toLowerCase() === clube.nome.toLowerCase())
+      .map(d => ({ nome: d.nome }));
     res.json({
-      ...clube,
-      desbravadores: incluirDesbravadores === 'true' ? require('../model/data').desbravadores.filter(d => d.clubeNome.toLowerCase() === clube.nome.toLowerCase()) : [],
-      unidades: incluirUnidades === 'true' ? clube.unidades : [],
+      id: clube.id,
+      nome: clube.nome,
+      unidades: clube.unidades || [],
+      desbravadores: listaDesbravadores,
     });
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -30,19 +39,35 @@ const buscarClube = (req, res) => {
 };
 
 const buscarUnidade = (req, res) => {
-  const { clubeNome, unidade, incluirClube, incluirDesbravadores } = req.query;
+  const { clubeNome, unidade } = req.query;
   try {
-    if (!clubeNome || !unidade) throw new Error('Os parâmetros "clubeNome" e "unidade" são obrigatórios.');
+    if (!clubeNome) throw new Error('O parâmetro "clubeNome" é obrigatório.');
     const clube = clubeService.listarClubes().find(c => c.nome.toLowerCase() === clubeNome.toLowerCase());
     if (!clube) return res.status(404).json({ error: 'Clube não encontrado' });
-    const unidadeValida = clube.unidades.find(u => u.toLowerCase() === unidade.toLowerCase());
-    if (!unidadeValida) return res.status(404).json({ error: 'Unidade não encontrada neste clube' });
     const desbravadores = require('../model/data').desbravadores;
-    res.json({
-      nome: unidadeValida,
-      clube: incluirClube === 'true' ? clube : null,
-      desbravadores: incluirDesbravadores === 'true' ? desbravadores.filter(d => d.clubeNome.toLowerCase() === clube.nome.toLowerCase() && d.unidade.toLowerCase() === unidadeValida.toLowerCase()) : [],
-    });
+    if (!unidade) {
+      // Retorna todas as unidades do clube
+      const unidades = (clube.unidades || []).map(u => ({
+        nome: u,
+        clube: clube.nome,
+        desbravadores: desbravadores
+          .filter(d => d.clubeNome.toLowerCase() === clube.nome.toLowerCase() && d.unidade.toLowerCase() === u.toLowerCase())
+          .map(d => d.nome),
+      }));
+      return res.json(unidades);
+    } else {
+      // Busca unidade específica no clube
+      const unidadeValida = clube.unidades.find(u => u.toLowerCase() === unidade.toLowerCase());
+      if (!unidadeValida) return res.status(404).json({ error: 'Unidade não encontrada neste clube' });
+      const listaDesbravadores = desbravadores
+        .filter(d => d.clubeNome.toLowerCase() === clube.nome.toLowerCase() && d.unidade.toLowerCase() === unidadeValida.toLowerCase())
+        .map(d => d.nome);
+      return res.json([{
+        nome: unidadeValida,
+        clube: clube.nome,
+        desbravadores: listaDesbravadores,
+      }]);
+    }
   } catch (err) {
     res.status(400).json({ error: err.message });
   }

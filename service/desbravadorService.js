@@ -9,8 +9,8 @@ function buscarDesbravadoresPorNome(parteNome) {
 
 
 function criarDesbravador({ nome, idade, documento, clubeNome, unidade }) {
-  if (!nome || !idade || documento == null || !clubeNome || !unidade) throw new Error('Todos os campos são obrigatórios');
-  if (typeof documento !== 'number' || !Number.isInteger(documento) || documento < 100000) throw new Error('O campo documento deve ser um número inteiro com pelo menos 6 dígitos');
+  if (!nome || !idade || !documento || !clubeNome || !unidade) throw new Error('Todos os campos são obrigatórios');
+  const docStr = String(documento).toLowerCase();
   if (idade < 10 || idade > 15) throw new Error('Idade deve ser entre 10 e 15 anos');
   // Case insensitive para nome do clube
   const clube = clubes.find(c => c.nome.toLowerCase() === clubeNome.toLowerCase());
@@ -18,13 +18,13 @@ function criarDesbravador({ nome, idade, documento, clubeNome, unidade }) {
   // Case insensitive para unidade e garantir unicidade
   const unidadeValida = clube.unidades.find(u => u.toLowerCase() === unidade.toLowerCase());
   if (!unidadeValida) throw new Error('Unidade não encontrada neste clube');
-  // Documento já cadastrado na base (em qualquer clube)
-  const documentoExistente = desbravadores.find(d => d.documento === documento);
+  // Documento já cadastrado na base (em qualquer clube, case insensitive)
+  const documentoExistente = desbravadores.find(d => String(d.documento).toLowerCase() === docStr);
   if (documentoExistente) throw new Error('Documento já cadastrado na base.');
   // Limite de 10 desbravadores por unidade (case insensitive)
   const count = desbravadores.filter(d => d.clubeNome.toLowerCase() === clube.nome.toLowerCase() && d.unidade.toLowerCase() === unidadeValida.toLowerCase()).length;
   if (count >= 10) throw new Error('Unidade já possui 10 desbravadores');
-  const desbravador = { nome, idade, documento, clubeNome: clube.nome, unidade: unidadeValida };
+  const desbravador = { nome, idade, documento: docStr, clubeNome: clube.nome, unidade: unidadeValida };
   desbravadores.push(desbravador);
   return desbravador;
 }
