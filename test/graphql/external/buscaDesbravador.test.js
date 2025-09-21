@@ -6,7 +6,7 @@ let token;
 
 require('dotenv').config();
 
-describe('Clube de Desbravadores', () => {
+describe('Clube de Desbravadores - Testes External', () => {
     beforeEach(async () => {
         token = await loginGraphql();
     });
@@ -35,7 +35,7 @@ describe('Clube de Desbravadores', () => {
         });
 
         it('Buscar desbravador com dados válidos', async () => {
-            const respostaEsperada = require('../../fixture/respostas/buscarDesbravador/buscaDesbravador.json');
+            const respostaEsperada = require('../../fixture/respostas/buscarDesbravador/Valida.json');
             const resposta = await request(process.env.BASE_URL_GRAPHQL)
                 .post('')
                 .set('Authorization', `Bearer ${token}`)
@@ -57,7 +57,7 @@ describe('Clube de Desbravadores', () => {
         });
 
         it('Buscar desbravador sem informar o número do documento', async () => {
-            const respostaEsperada = require('../../fixture/respostas/buscarDesbravador/buscaDesbravadorSemInformarONumeroDoDocumento.json');
+            const respostaEsperada = require('../../fixture/respostas/buscarDesbravador/SemInformarONumeroDoDocumento.json');
             const resposta = await request(process.env.BASE_URL_GRAPHQL)
                 .post('')
                 .set('Authorization', `Bearer ${token}`)
@@ -79,7 +79,7 @@ describe('Clube de Desbravadores', () => {
         });
 
         it('Buscar desbravador com valor null', async () => {
-            const respostaEsperada = require('../../fixture/respostas/buscarDesbravador/buscaDesbravadorValorNull.json');
+            const respostaEsperada = require('../../fixture/respostas/buscarDesbravador/ValorNull.json');
             const resposta = await request(process.env.BASE_URL_GRAPHQL)
                 .post('')
                 .set('Authorization', `Bearer ${token}`)
@@ -101,7 +101,7 @@ describe('Clube de Desbravadores', () => {
         });
 
         it('Buscar desbravador com número do documento inexistente', async () => {
-            const respostaEsperada = require('../../fixture/respostas/buscarDesbravador/buscarDesbravadorComNumeroDoDocumentoInexistente.json');
+            const respostaEsperada = require('../../fixture/respostas/buscarDesbravador/ComNumeroDoDocumentoInexistente.json');
             const resposta = await request(process.env.BASE_URL_GRAPHQL)
                 .post('')
                 .set('Authorization', `Bearer ${token}`)
@@ -122,5 +122,7 @@ describe('Clube de Desbravadores', () => {
             expect(resposta.body.errors[0].message).to.equals(respostaEsperada.message);
         })
     });
+
+    
 });
 
