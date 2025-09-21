@@ -34,6 +34,11 @@ module.exports = gql`
     user: User!
   }
 
+  type RegisterPayload {
+    id: ID!
+    username: String!
+  }
+
   type Query {
     users: [User!]!
   buscarClube(nome: String!): Clube
@@ -43,7 +48,7 @@ module.exports = gql`
 
   type Mutation {
     login(username: String!, password: String!): AuthPayload!
-    registerUser(username: String!, password: String!): AuthPayload!
+    registerUser(username: String!, password: String!): RegisterPayload!
 
     # As mutations abaixo são protegidas por JWT (token no header)
     criarClube(nome: String!, unidades: [String!]): Clube!

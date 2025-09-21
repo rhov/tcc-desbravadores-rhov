@@ -11,8 +11,7 @@ function register(req, res) {
   const hash = bcrypt.hashSync(password, 8);
   const user = { id: users.length + 1, username, password: hash };
   users.push(user);
-  const token = jwt.sign({ id: user.id, username: user.username }, secret);
-  res.status(201).json({ token, user: { id: user.id, username: user.username } });
+  res.status(201).json({ id: user.id, username: user.username });
 }
 
 function login(req, res) {
@@ -34,8 +33,7 @@ function registerGraphQL(username, password) {
   const hash = bcrypt.hashSync(password, 8);
   const user = { id: users.length + 1, username, password: hash };
   users.push(user);
-  const token = jwt.sign({ id: user.id, username: user.username }, secret);
-  return { token, user: { id: user.id, username: user.username } };
+  return { id: user.id, username: user.username };
 }
 
 function loginGraphQL(username, password) {
