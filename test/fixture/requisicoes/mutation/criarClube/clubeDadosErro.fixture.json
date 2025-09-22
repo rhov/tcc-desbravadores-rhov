@@ -1,0 +1,35 @@
+[
+  {
+    "nomeDoTeste": "Registrar clube com dados faltando (unidades)",
+    "resultadoEsperado": "Obrigatório informar os campos nome e unidades (ao menos uma)!",
+    "criarClube": {
+      "query": "mutation CriarClube($nome: String!, $unidades: [String!]) { criarClube(nome: $nome, unidades: $unidades) { id nome unidades } }",
+      "variables": {
+        "nome": "Paineiras",
+        "unidades": null
+      }
+    }
+  },
+  {
+    "nomeDoTeste": "Registrar clube com dados faltando (nome vazio)",
+    "resultadoEsperado": "Obrigatório informar os campos nome e unidades (ao menos uma)!",
+    "criarClube": {
+      "query": "mutation CriarClube($nome: String!, $unidades: [String!]) { criarClube(nome: $nome, unidades: $unidades) { id nome unidades } }",
+      "variables": {
+        "nome": "",
+        "unidades": ["Corcovado"]
+      }
+    }
+  },
+  {
+    "nomeDoTeste": "Registrar clube com duas unidades iguais",
+    "resultadoEsperado": "Não pode haver duas unidades com o mesmo nome no mesmo clube",
+    "criarClube": {
+      "query": "mutation CriarClube($nome: String!, $unidades: [String!]) { criarClube(nome: $nome, unidades: $unidades) { id nome unidades } }",
+      "variables": {
+        "nome": "Paineiras",
+        "unidades": ["Corcovado", "Corcovado"]
+      }
+    }
+  }
+]
