@@ -2,9 +2,7 @@ const desbravadorService = require('../service/desbravadorService');
 
 const criarDesbravador = (req, res) => {
   try {
-    const { documento, ...rest } = req.body;
-    const docStr = String(documento).toLowerCase();
-    const desbravador = desbravadorService.criarDesbravador({ ...rest, documento: docStr });
+    const desbravador = desbravadorService.criarDesbravador(req.body);
     res.status(201).json(desbravador);
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -24,18 +22,8 @@ const listarDesbravadoresPorUnidade = (req, res) => {
 const buscarDesbravador = (req, res) => {
   const { documento } = req.query;
   try {
-    if (!documento) throw new Error('O parâmetro "documento" do desbravador é obrigatório.');
-    const docStr = String(documento).toLowerCase();
-    const desbravadores = require('../model/data').desbravadores;
-    const desbravador = desbravadores.find(d => String(d.documento).toLowerCase() === docStr);
-    if (!desbravador) return res.status(404).json({ error: 'Desbravador não encontrado' });
-    res.json({
-      nome: desbravador.nome,
-      idade: desbravador.idade,
-      documento: desbravador.documento,
-      clubeNome: desbravador.clubeNome,
-      unidadeNome: desbravador.unidade,
-    });
+    const result = desbravadorService.buscarDesbravadorPorDocumento(documento);
+    res.json(result);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }

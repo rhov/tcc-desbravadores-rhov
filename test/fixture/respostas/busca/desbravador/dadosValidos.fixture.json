@@ -1,0 +1,11 @@
+{
+  "data": {
+    "buscarDesbravador": {
+      "nome": "Moisés",
+      "idade": 13,
+      "documento": "005",
+      "clubeNome": "Sacerdotes",
+      "unidadeNome": "Pedra de Onix"
+    }
+  }
+}

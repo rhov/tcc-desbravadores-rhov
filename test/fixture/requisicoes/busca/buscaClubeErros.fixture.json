@@ -1,0 +1,32 @@
+[
+    {
+        "nomeDoTeste": "Buscar clube com nome vazio",
+        "resultadoEsperado": "Por gentileza, informe o nome do clube para que possamos realizar a busca.",
+        "buscarClube": {
+            "query": "query BuscarClube($nome: String!) { buscarClube(nome: $nome) { id nome unidades desbravadores } }",
+            "variables": {
+                "nome": ""
+            }
+        }
+    },
+    {
+        "nomeDoTeste": "Buscar clube com nome null",
+        "resultadoEsperado": "Variable \"$nome\" of non-null type \"String!\" must not be null.",
+        "buscarClube": {
+            "query": "query BuscarClube($nome: String!) { buscarClube(nome: $nome) { id nome unidades desbravadores } }",
+            "variables": {
+                "nome": null
+            }
+        }
+    },
+    {
+        "nomeDoTeste": "Buscar clube inexistente",
+        "resultadoEsperado": "Não encontramos nenhum clube com o nome informado. Por favor, revise e tente novamente.",
+        "buscarClube": {
+            "query": "query BuscarClube($nome: String!) { buscarClube(nome: $nome) { id nome unidades desbravadores } }",
+            "variables": {
+                "nome": "nomeNaoEncontrado"
+            }
+        }
+    }
+]

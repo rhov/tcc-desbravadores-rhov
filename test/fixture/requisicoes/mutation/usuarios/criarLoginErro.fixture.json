@@ -1,0 +1,35 @@
+[
+  {
+    "nomeDoTeste": "Registrar usuário já existente",
+    "resultadoEsperado": "Usuário já existe",
+    "registerUser": {
+      "query": "mutation Mutation($username: String!, $password: String!) { registerUser(username: $username, password: $password) { id username } }",
+      "variables": {
+        "username": "rodrigo",
+        "password": "123"
+      }
+    }
+  },
+  {
+    "nomeDoTeste": "Registrar usuário com password vazio",
+    "resultadoEsperado": "Dados obrigatórios",
+    "registerUser": {
+      "query": "mutation Mutation($username: String!, $password: String!) { registerUser(username: $username, password: $password) { id username } }",
+      "variables": {
+        "username": "Genoveva",
+        "password": ""
+      }
+    }
+  },
+  {
+    "nomeDoTeste": "Registrar usuário com username vazio",
+    "resultadoEsperado": "Dados obrigatórios",
+    "registerUser": {
+      "query": "mutation Mutation($username: String!, $password: String!) { registerUser(username: $username, password: $password) { id username } }",
+      "variables": {
+        "username": "",
+        "password": "6546060"
+      }
+    }
+  }
+]

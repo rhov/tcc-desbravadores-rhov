@@ -1,0 +1,35 @@
+[
+  {
+    "nomeDoTeste": "Realizar login com credenciais inválidas (username e password)",
+    "resultadoEsperado": "Credenciais inválidas",
+    "login": {
+      "query": "mutation Mutation($username: String!, $password: String!) { login(username: $username, password: $password) { token } }",
+      "variables": {
+        "username": "__FAKER_USERNAME__",
+        "password": "__FAKER_PASSWORD__"
+      }
+    }
+  },
+  {
+    "nomeDoTeste": "Realizar login com credenciais inválidas (username)",
+    "resultadoEsperado": "Credenciais inválidas",
+    "login": {
+      "query": "mutation Mutation($username: String!, $password: String!) { login(username: $username, password: $password) { token } }",
+      "variables": {
+        "username": "__FAKER_USERNAME__",
+        "password": "123"
+      }
+    }
+  },
+  {
+    "nomeDoTeste": "Realizar login com credenciais inválidas (password)",
+    "resultadoEsperado": "Credenciais inválidas",
+    "login": {
+      "query": "mutation Mutation($username: String!, $password: String!) { login(username: $username, password: $password) { token } }",
+      "variables": {
+        "username": "rodrigo",
+        "password": "1234"
+      }
+    }
+  }
+]

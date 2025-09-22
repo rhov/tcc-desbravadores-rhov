@@ -1,0 +1,32 @@
+{
+  "data": {
+    "buscarClube": {
+      "id": "1",
+      "nome": "Sacerdotes",
+      "unidades": [
+        "Melquisedeque",
+        "Pedra de Onix",
+        "Candelabro de Ouro",
+        "Shekinah"
+      ],
+      "desbravadores": [
+        "Nycollas",
+        "Gabriel",
+        "Dyllan",
+        "Denilson",
+        "Moisés",
+        "Lucas",
+        "Pedro",
+        "Samuel",
+        "Victoria",
+        "Bia",
+        "Ana",
+        "Larissa",
+        "Carine",
+        "Juliana",
+        "Beatriz",
+        "Marina"
+      ]
+    }
+  }
+}
