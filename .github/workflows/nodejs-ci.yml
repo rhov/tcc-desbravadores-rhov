@@ -35,3 +35,9 @@ jobs:
 
     - name: Rodar os testes External de API GraphQL via HTTP
       run: npm run test
+
+    - name: Upload report ALL tests Graphql
+      uses: actions/upload-artifact@v4
+      with:
+        name: mochawesome-report ALL tests Graphql
+        path: mochawesome-report/
