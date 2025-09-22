@@ -1,6 +1,7 @@
 const request = require('supertest');
 const { expect } = require('chai');
 const { loginGraphql } = require('../../../factory/requisicoes/login/login');
+let buscaDbvValidacoes = require('../../../fixture/requisicoes/busca/buscaDbvErros.fixture.json');
 let token;
 
 require('dotenv').config();
@@ -55,73 +56,19 @@ describe('Clube de Desbravadores - Testes External', () => {
             expect(resposta.body).to.eql(respostaEsperada);
         });
 
-        it('Buscar desbravador sem informar o número do documento', async () => {
-            const respostaEsperada = require('../../../fixture/respostas/busca/desbravador/documentoNaoInformado.fixture.json');
-            const resposta = await request(process.env.BASE_URL_GRAPHQL)
-                .post('')
-                .set('Authorization', `Bearer ${token}`)
-                .send({
-                    query: `query BuscarDesbravador($documento: String!) {
-                    buscarDesbravador(documento: $documento) {
-                        nome
-                        idade
-                        documento
-                        clubeNome
-                        unidadeNome
-                    }
-                }`,
-                    variables: {
-                        documento: ""
-                    }
-                });
-            expect(resposta.body.errors[0].message).to.equals(respostaEsperada.message);
-        });
 
-        it('Buscar desbravador com valor null', async () => {
-            const respostaEsperada = require('../../../fixture/respostas/busca/desbravador/ValorNull.fixture.json');
-            const resposta = await request(process.env.BASE_URL_GRAPHQL)
-                .post('')
-                .set('Authorization', `Bearer ${token}`)
-                .send({
-                    query: `query BuscarDesbravador($documento: String!) {
-                    buscarDesbravador(documento: $documento) {
-                        nome
-                        idade
-                        documento
-                        clubeNome
-                        unidadeNome
-                    }
-                }`,
-                    variables: {
-                        documento: null
-                    }
-                });
-            expect(resposta.body.errors[0].message).to.equals(respostaEsperada.message);
-        });
-
-        it('Buscar desbravador com número do documento inexistente', async () => {
-            const respostaEsperada = require('../../../fixture/respostas/busca/desbravador/documentoInexistente.fixture.json');
-            const resposta = await request(process.env.BASE_URL_GRAPHQL)
-                .post('')
-                .set('Authorization', `Bearer ${token}`)
-                .send({
-                    query: `query BuscarDesbravador($documento: String!) {
-                    buscarDesbravador(documento: $documento) {
-                        nome
-                        idade
-                        documento
-                        clubeNome
-                        unidadeNome
-                    }
-                }`,
-                    variables: {
-                        documento: "documentoNaoEncontrado"
-                    }
-                });
-            expect(resposta.body.errors[0].message).to.equals(respostaEsperada.message);
+        buscaDbvValidacoes.forEach(teste => {
+            it(`${teste.nomeDoTeste}`, async () => {
+                const resposta = await request(process.env.BASE_URL_GRAPHQL).post('')
+                    .set('Authorization', `Bearer ${token}`)
+                    .send(teste.buscarDesbravador);
+                expect(resposta.body.errors[0].message).to.eql(teste.resultadoEsperado);
+            });
         })
+
+ 
     });
 
-    
+
 });
 

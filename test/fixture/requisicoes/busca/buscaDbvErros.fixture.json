@@ -1,0 +1,32 @@
+[
+  {
+    "nomeDoTeste": "Buscar desbravador sem informar o número do documento",
+  "resultadoEsperado": "Por gentileza, informe o documento do desbravador para que possamos realizar a busca.",
+    "buscarDesbravador": {
+      "query": "query BuscarDesbravador($documento: String!) { buscarDesbravador(documento: $documento) { nome idade documento clubeNome unidadeNome } }",
+      "variables": {
+        "documento": ""
+      }
+    }
+  },
+  {
+    "nomeDoTeste": "Buscar desbravador com valor null",
+  "resultadoEsperado": "Variable \"$documento\" of non-null type \"String!\" must not be null.",
+    "buscarDesbravador": {
+      "query": "query BuscarDesbravador($documento: String!) { buscarDesbravador(documento: $documento) { nome idade documento clubeNome unidadeNome } }",
+      "variables": {
+        "documento": null
+      }
+    }
+  },
+  {
+    "nomeDoTeste": "Buscar desbravador com número do documento inexistente",
+  "resultadoEsperado": "Não encontramos nenhum desbravador com o documento informado. Por favor, revise e tente novamente.",
+    "buscarDesbravador": {
+      "query": "query BuscarDesbravador($documento: String!) { buscarDesbravador(documento: $documento) { nome idade documento clubeNome unidadeNome } }",
+      "variables": {
+        "documento": "documentoNaoEncontrado"
+      }
+    }
+  }
+]
