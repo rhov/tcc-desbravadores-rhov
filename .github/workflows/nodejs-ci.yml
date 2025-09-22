@@ -25,9 +25,10 @@ jobs:
     - name: Criar .env
       run: |
         echo "BASE_URL_GRAPHQL=${{ secrets.BASE_URL_GRAPHQL }}" >> .env
+        echo "BASE_URL_REST=${{ secrets.BASE_URL_REST }}" >> .env
 
-    - name: Subir a API GraphQL
-      run: npm run start-graphql &
+    - name: Subir as APIs GraphQL
+      run: npm run start &
 
     - name: Esperar a API GraphQL estar Funcionando
       run: sleep 8
