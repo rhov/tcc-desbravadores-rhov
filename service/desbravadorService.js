@@ -26,7 +26,8 @@ function criarDesbravador({ nome, idade, documento, clubeNome, unidade }) {
   if (count >= 10) throw new Error('Unidade já possui 10 desbravadores');
   const desbravador = { nome, idade, documento: docStr, clubeNome: clube.nome, unidade: unidadeValida };
   desbravadores.push(desbravador);
-  return desbravador;
+  // Retorna unidadeNome para compatibilidade com o schema GraphQL
+  return { ...desbravador, unidadeNome: unidadeValida };
 }
 
 function listarDesbravadoresPorUnidade(clubeNome, unidade) {
