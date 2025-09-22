@@ -1,5 +1,6 @@
 const request = require('supertest');
 const { expect } = require('chai');
+const { faker } = require('@faker-js/faker');
 const { loginGraphql } = require('../../../factory/requisicoes/login/login');
 let token;
 
@@ -13,10 +14,10 @@ describe('Clube de Desbravadores - Testes External', () => {
 
 
 
-    describe('Criar Clube', () => {
+    describe('Criar Desbravador', () => {
 
 
-        it('Criar Clube de Desbravadores com dados válidos', async () => {
+        it('Criar Desbravador com dados válidos', async () => {
             const respostaEsperada = { nome: "Pantera Negra", unidades: ["Lince", "Tigre"] };
             const resposta = await request(process.env.BASE_URL_GRAPHQL).post('')
                 .set('Authorization', `Bearer ${token}`)
