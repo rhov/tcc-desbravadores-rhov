@@ -1,3 +1,15 @@
+function buscarDesbravadorPorDocumento(documento) {
+  if (documento === null || documento === undefined || documento === "") {
+    throw new Error('Por gentileza, informe o documento do desbravador para que possamos realizar a busca.');
+  }
+  const docStr = String(documento).toLowerCase();
+  const desbravador = desbravadores.find(d => String(d.documento).toLowerCase() === docStr);
+  if (!desbravador) {
+    throw new Error('Não encontramos nenhum desbravador com o documento informado. Por favor, revise e tente novamente.');
+  }
+  // Retorna unidadeNome para compatibilidade com o schema GraphQL
+  return { ...desbravador, unidadeNome: desbravador.unidade };
+}
 
 const { desbravadores, clubes } = require('../model/data');
 
@@ -23,7 +35,7 @@ function criarDesbravador({ nome, idade, documento, clubeNome, unidade }) {
   if (documentoExistente) throw new Error('Documento já cadastrado na base.');
   // Limite de 10 desbravadores por unidade (case insensitive)
   const count = desbravadores.filter(d => d.clubeNome.toLowerCase() === clube.nome.toLowerCase() && d.unidade.toLowerCase() === unidadeValida.toLowerCase()).length;
-  if (count >= 10) throw new Error('Unidade já possui 10 desbravadores');
+
   const desbravador = { nome, idade, documento: docStr, clubeNome: clube.nome, unidade: unidadeValida };
   desbravadores.push(desbravador);
   // Retorna unidadeNome para compatibilidade com o schema GraphQL
@@ -39,4 +51,4 @@ function listarDesbravadoresPorUnidade(clubeNome, unidade) {
   return desbravadores.filter(d => d.clubeNome.toLowerCase() === clube.nome.toLowerCase() && d.unidade.toLowerCase() === unidadeValida.toLowerCase());
 }
 
-module.exports = { criarDesbravador, listarDesbravadoresPorUnidade, buscarDesbravadoresPorNome };
+module.exports = { criarDesbravador, listarDesbravadoresPorUnidade, buscarDesbravadoresPorNome, buscarDesbravadorPorDocumento };

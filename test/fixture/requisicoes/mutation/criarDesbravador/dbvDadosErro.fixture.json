@@ -1,0 +1,142 @@
+[
+    {
+        "nomeDoTeste": "Obrigatorieade de dados - Campo vazio (nome)",
+        "criarDesbravador": {
+            "query": "mutation CriarDesbravador($nome: String!, $idade: Int!, $documento: String!, $clubeNome: String!, $unidade: String!) {criarDesbravador(nome: $nome, idade: $idade, documento: $documento, clubeNome: $clubeNome, unidade: $unidade) {nome    idade    documento    clubeNome    unidadeNome  }}",
+            "variables": {
+                "nome": "",
+                "idade": 14,
+                "documento": "987",
+                "clubeNome": "sacerdotes",
+                "unidade": "shekinah"
+            }
+        },
+        "resultadoEsperado": "Todos os campos são obrigatórios"
+    },
+    {
+        "nomeDoTeste": "Obrigatorieade de dados - Campo vazio (idade)",
+        "criarDesbravador": {
+            "query": "mutation CriarDesbravador($nome: String!, $idade: Int!, $documento: String!, $clubeNome: String!, $unidade: String!) {criarDesbravador(nome: $nome, idade: $idade, documento: $documento, clubeNome: $clubeNome, unidade: $unidade) {nome    idade    documento    clubeNome    unidadeNome  }}",
+            "variables": {
+                "nome": "Amy",
+                "idade": 0,
+                "documento": "987",
+                "clubeNome": "sacerdotes",
+                "unidade": "shekinah"
+            }
+        },
+        "resultadoEsperado": "Todos os campos são obrigatórios"
+    },
+    {
+        "nomeDoTeste": "Obrigatorieade de dados - Campo vazio (documento)",
+        "criarDesbravador": {
+            "query": "mutation CriarDesbravador($nome: String!, $idade: Int!, $documento: String!, $clubeNome: String!, $unidade: String!) {criarDesbravador(nome: $nome, idade: $idade, documento: $documento, clubeNome: $clubeNome, unidade: $unidade) {nome    idade    documento    clubeNome    unidadeNome  }}",
+            "variables": {
+                "nome": "Amy",
+                "idade": 15,
+                "documento": "",
+                "clubeNome": "sacerdotes",
+                "unidade": "shekinah"
+            }
+        },
+        "resultadoEsperado": "Todos os campos são obrigatórios"
+    },
+      {
+        "nomeDoTeste": "Obrigatorieade de dados - Campo vazio (clubeNome)",
+        "criarDesbravador": {
+            "query": "mutation CriarDesbravador($nome: String!, $idade: Int!, $documento: String!, $clubeNome: String!, $unidade: String!) {criarDesbravador(nome: $nome, idade: $idade, documento: $documento, clubeNome: $clubeNome, unidade: $unidade) {nome    idade    documento    clubeNome    unidadeNome  }}",
+            "variables": {
+                "nome": "Amy",
+                "idade": 15,
+                "documento": "999999",
+                "clubeNome": "",
+                "unidade": "shekinah"
+            }
+        },
+        "resultadoEsperado": "Todos os campos são obrigatórios"
+    },
+    {
+        "nomeDoTeste": "Obrigatorieade de dados - Campo vazio (unidade)",
+        "criarDesbravador": {
+            "query": "mutation CriarDesbravador($nome: String!, $idade: Int!, $documento: String!, $clubeNome: String!, $unidade: String!) {criarDesbravador(nome: $nome, idade: $idade, documento: $documento, clubeNome: $clubeNome, unidade: $unidade) {nome    idade    documento    clubeNome    unidadeNome  }}",
+            "variables": {
+                "nome": "Amy",
+                "idade": 15,
+                "documento": "999999",
+                "clubeNome": "sacerdotes",
+                "unidade": ""
+            }
+        },
+        "resultadoEsperado": "Todos os campos são obrigatórios"
+    },
+        {
+        "nomeDoTeste": "Idade deve ser entre 10 e 15 anos | Idade = 9",
+        "criarDesbravador": {
+            "query": "mutation CriarDesbravador($nome: String!, $idade: Int!, $documento: String!, $clubeNome: String!, $unidade: String!) {criarDesbravador(nome: $nome, idade: $idade, documento: $documento, clubeNome: $clubeNome, unidade: $unidade) {nome    idade    documento    clubeNome    unidadeNome  }}",
+            "variables": {
+                "nome": "Amanda",
+                "idade": 9,
+                "documento": "9870",
+                "clubeNome": "sacerdotes",
+                "unidade": "shekinah"
+            }
+        },
+        "resultadoEsperado": "Idade deve ser entre 10 e 15 anos"
+    },
+        {
+        "nomeDoTeste": "Idade deve ser entre 10 e 15 anos | Idade = 16",
+        "criarDesbravador": {
+            "query": "mutation CriarDesbravador($nome: String!, $idade: Int!, $documento: String!, $clubeNome: String!, $unidade: String!) {criarDesbravador(nome: $nome, idade: $idade, documento: $documento, clubeNome: $clubeNome, unidade: $unidade) {nome    idade    documento    clubeNome    unidadeNome  }}",
+            "variables": {
+                "nome": "Amanda",
+                "idade": 16,
+                "documento": "9870",
+                "clubeNome": "sacerdotes",
+                "unidade": "shekinah"
+            }
+        },
+        "resultadoEsperado": "Idade deve ser entre 10 e 15 anos"
+    },
+           {
+        "nomeDoTeste": "Clube não encontrado",
+        "criarDesbravador": {
+            "query": "mutation CriarDesbravador($nome: String!, $idade: Int!, $documento: String!, $clubeNome: String!, $unidade: String!) {criarDesbravador(nome: $nome, idade: $idade, documento: $documento, clubeNome: $clubeNome, unidade: $unidade) {nome    idade    documento    clubeNome    unidadeNome  }}",
+            "variables": {
+                "nome": "Amanda",
+                "idade": 15,
+                "documento": "9870",
+                "clubeNome": "Esse cluble não foi encontrado",
+                "unidade": "shekinah"
+            }
+        },
+        "resultadoEsperado": "Clube não encontrado"
+    },
+     {
+        "nomeDoTeste": "Unidade não encontrada",
+        "criarDesbravador": {
+            "query": "mutation CriarDesbravador($nome: String!, $idade: Int!, $documento: String!, $clubeNome: String!, $unidade: String!) {criarDesbravador(nome: $nome, idade: $idade, documento: $documento, clubeNome: $clubeNome, unidade: $unidade) {nome    idade    documento    clubeNome    unidadeNome  }}",
+            "variables": {
+                "nome": "Amanda",
+                "idade": 15,
+                "documento": "9807",
+                "clubeNome": "sacerdotes",
+                "unidade": "farao do egito"
+            }
+        },
+        "resultadoEsperado": "Unidade não encontrada neste clube"
+    },
+    {
+        "nomeDoTeste": "Documento já cadastrado",
+        "criarDesbravador": {
+            "query": "mutation CriarDesbravador($nome: String!, $idade: Int!, $documento: String!, $clubeNome: String!, $unidade: String!) {criarDesbravador(nome: $nome, idade: $idade, documento: $documento, clubeNome: $clubeNome, unidade: $unidade) {nome    idade    documento    clubeNome    unidadeNome  }}",
+            "variables": {
+                "nome": "Amanda",
+                "idade": 15,
+                "documento": "001",
+                "clubeNome": "sacerdotes",
+                "unidade": "shekinah"
+            }
+        },
+        "resultadoEsperado": "Documento já cadastrado na base."
+    }
+]
