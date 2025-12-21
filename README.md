@@ -27,19 +27,29 @@ thresholds: {
 
 ### Checks
 Checks são validações que garantem que a resposta da API está correta, como status esperado ou dados retornados.
-Arquivo: test/k6/rest/criarClube.test.js, linhas 44-47
+Arquivo: test/k6/rest/criarClube.test.js, linhas 65-68
 ```
-check(res, {
-    'Clube criado com sucesso - Status: 201': (r) => r.status === 201,
-    'Resposta do servidor igual ao enviado': () => body.nome === nomeClube && JSON.stringify(body.unidades) === JSON.stringify(unidadesClube)
-});
+  const result = check(res, {
+      'Clube criado com sucesso - Status: 201': (r) => r.status === 201,
+      'Resposta do servidor igual ao enviado': () => body.nome === nomeClube && JSON.stringify(body.unidades) === JSON.stringify(unidadesClube)
+  });
 ```
 
 ### Helpers
 Helpers são funções auxiliares que centralizam lógicas comuns, como login.
+Dessa forma sempre que for necessário um login não precisamos repetir o código, apenas chamamos a função.
+
 Arquivo: test/k6/rest/helpers/loginHelper.js
 ```
 export function login(baseUrl, username, password) { ... }
+```
+
+
+Arquivo: test/k6/rest/criarClube.test.js, linha 5 e 42
+```
+import { login } from './helpers/loginHelper.js';
+```
+token = login(BASE_URL, usuario.username, usuario.password);
 ```
 
 ### Trends
@@ -172,6 +182,32 @@ token = respostaLogin.json().token;
 ---
 
 Essas práticas garantem que os testes sejam robustos, realistas e fáceis de manter, atendendo aos requisitos do TCC e às melhores práticas de automação de testes de performance.
+
+
+---
+
+## Comandos para Execução Rápida dos Testes de Performance
+
+Para facilitar a execução dos testes de performance, utilize os scripts já configurados no projeto. Basta rodar os comandos abaixo no terminal, na raiz do projeto:
+
+- Executar teste de criação de clube:
+```
+npm run k6-criarClube-local-test
+```
+
+- Executar todos os testes k6 do diretório:
+```
+npm run k6-test-local
+```
+
+- Executar teste de registro de usuários:
+```
+npm run k6-registerUsuarios-local-test
+```
+
+Esses comandos já estão prontos no arquivo package.json e permitem rodar os testes rapidamente, sem necessidade de configurar manualmente o k6.
+
+---
 
 # API Clubes de Desbravadores
 
@@ -310,4 +346,27 @@ query {
 ## Testes
 - Pronto para Mocha, Chai, Supertest
 - Mensagens de erro esperadas são validadas diretamente no teste, sem dependência de arquivos de fixture para erros.
+
+---
+
+## Comandos para Execução Rápida dos Testes de Performance
+
+Para facilitar a execução dos testes de performance, utilize os scripts já configurados no projeto. Basta rodar os comandos abaixo no terminal, na raiz do projeto:
+
+- Executar teste de criação de clube:
+```
+npm run k6-criarClube-local-test
+```
+
+- Executar todos os testes k6 do diretório:
+```
+npm run k6-test-local
+```
+
+- Executar teste de registro de usuários:
+```
+npm run k6-registerUsuarios-local-test
+```
+
+Esses comandos já estão prontos no arquivo package.json e permitem rodar os testes rapidamente, sem necessidade de configurar manualmente o k6.
 
