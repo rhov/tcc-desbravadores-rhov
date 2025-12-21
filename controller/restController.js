@@ -206,9 +206,18 @@ router.get('/users', jwtMiddleware.rest, userService.getUsers);
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - nome
+ *               - unidades
  *             properties:
  *               nome:
  *                 type: string
+ *               unidades:
+ *                 type: array
+ *                 minItems: 1
+ *                 items:
+ *                   type: string
+ *                 description: Lista de nomes das unidades (ao menos uma)
  *     responses:
  *       201:
  *         description: Clube criado

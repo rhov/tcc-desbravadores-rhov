@@ -39,10 +39,15 @@ const desbravadores = [
 ];
 const bcrypt = require('bcryptjs');
 const users = [{
-  id: 1,
-  username: "rodrigo",
-  password: bcrypt.hashSync("123", 8) // senha: 123
-}];
+    id: 1,
+    username: "rodrigo",
+    password: bcrypt.hashSync("123", 8) // senha: 123
+  },
+  {
+    id: 2,
+    username: "aline",
+    password: bcrypt.hashSync("123", 8) // senha: 123
+  }];
 
 module.exports = {
   clubes,
