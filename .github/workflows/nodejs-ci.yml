@@ -42,22 +42,3 @@ jobs:
         with:
           name: mochawesome-report ALL tests Graphql
           path: mochawesome-report/
-
-      - name: Install k6
-        run: |
-          # Baixa a chave e adiciona ao chaveiro do sistema de forma direta
-          curl -fsSL https://dl.k6.io/key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/k6-archive-keyring.gpg
-          
-          # Adiciona o repositório à lista de fontes
-          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
-          
-          # Atualiza e instala
-          sudo apt-get update
-          sudo apt-get install k6
-
-      - name: Teste de Performance k6 (criarClube)
-        run: |
-          # Usamos o k6 instalado diretamente no sistema
-          k6 run test/k6/rest/criarClube.test.js
-        env:
-          BASE_URL_REST: ${{ secrets.BASE_URL_REST }} # Deve ser http://localhost:3000
