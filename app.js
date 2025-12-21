@@ -32,11 +32,7 @@ const swaggerOptions = {
         },
       },
     },
-    security: [
-      {
-        bearerAuth: [],
-      },
-    ],
+    // Não define security globalmente, apenas nos endpoints
   },
   apis: ['./controller/*.js'],
 };
