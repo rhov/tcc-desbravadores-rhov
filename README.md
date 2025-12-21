@@ -18,17 +18,61 @@ O projeto utiliza diversos conceitos fundamentais de automação de testes de pe
 
 | Conceito                | Explicação                                                                                                                                                                                                 | Exemplo real do projeto                                                                                   |
 |-------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
-| Thresholds              | Thresholds são validações de limite de tempo que criamos após alinhamento com o time e que indicam valores aceitáveis para determinado endpoint por exemplo. No teste do endpoint de criação de clube, utilizamos 2 segundos como limite tolerável. | Arquivo: test/k6/rest/criarClube.test.js, linhas 27-31<br><br>Código:<br>```javascript<br>thresholds: {<br>    http_req_duration: ['p(95)<2000'],<br>    'tempo_criacao_clube': ['p(95)<2000'],<br>    'tempo_busca_unidade': ['p(95)<2000'],<br>},<br>``` |
-| Checks                  | Checks são validações que garantem que a resposta da API está correta, como status esperado ou dados retornados. | Arquivo: test/k6/rest/criarClube.test.js, linhas 44-47<br><br>Código:<br>```javascript<br>check(res, {<br>    'Clube criado com sucesso - Status: 201': (r) => r.status === 201,<br>    'Resposta do servidor igual ao enviado': () => body.nome === nomeClube && JSON.stringify(body.unidades) === JSON.stringify(unidadesClube)<br>});<br>``` |
-| Helpers                 | Helpers são funções auxiliares que centralizam lógicas comuns, como login. | Arquivo: test/k6/rest/helpers/loginHelper.js<br><br>Código:<br>```javascript<br>export function login(baseUrl, username, password) { ... }<br>``` |
-| Trends                  | Trends são métricas customizadas para monitorar tempos de execução de operações específicas. | Arquivo: test/k6/rest/criarClube.test.js, linhas 10-11<br><br>Código:<br>```javascript<br>const tempoCriacaoClube = new Trend('tempo_criacao_clube');<br>const tempoBuscaUnidade = new Trend('tempo_busca_unidade');<br>``` |
-| Faker                   | O pacote k6/x/faker é utilizado para gerar dados dinâmicos e variados, como nomes de clubes e unidades, simulando cenários reais e evitando dados repetidos. | Arquivo: test/k6/rest/criarClube.test.js, linha 38<br><br>Código:<br>```javascript<br>nomeClube = `${fakerData.address.country()} ${fakerData.numbers.int64()}`;<br>``` |
-| Variável de Ambiente    | O endereço da API é configurado via variável de ambiente BASE_URL_REST, permitindo flexibilidade na execução dos testes em diferentes ambientes. | Arquivo: test/k6/rest/criarClube.test.js, linha 8<br><br>Código:<br>```javascript<br>const BASE_URL = __ENV.BASE_URL_REST;<br>``` |
-| Stages                  | Stages definem a variação da carga durante o teste, simulando ramp up, pico e ramp down. | Arquivo: test/k6/rest/criarClube.test.js, linhas 14-17<br><br>Código:<br>```javascript<br>stages: [<br>    { duration: '5s', target: 2 },<br>    { duration: '20s', target: 8 },<br>    { duration: '10s', target: 10 },<br>    { duration: '1s', target: 0 },<br>],<br>``` |
-| Reaproveitamento de Resposta | Dados obtidos em uma requisição (como token de login ou nome do clube criado) são utilizados em etapas seguintes do teste, garantindo encadeamento e realismo. | Arquivo: test/k6/rest/criarClube.test.js, linhas 22-23 e 38-39<br><br>Código:<br>```javascript<br>token = login(BASE_URL, usuario.username, usuario.password);<br>// ...<br>const payload = JSON.stringify({ nome: nomeClube, unidades: unidadesClube });<br>``` |
-| Uso de Token de Autenticação | Todas as requisições protegidas enviam o token JWT no header Authorization, simulando o uso real da API. | Arquivo: test/k6/rest/criarClube.test.js, linhas 41 e 54<br><br>Código:<br>```javascript<br>headers: {<br>    'Authorization': `Bearer ${token}`,<br>    'Content-Type': 'application/json'<br>}<br>``` |
-| Data-Driven Testing     | O teste utiliza o SharedArray para carregar múltiplos usuários de um arquivo JSON, permitindo testar diferentes perfis e cenários. | Arquivo: test/k6/rest/criarClube.test.js, linha 13<br><br>Código:<br>```javascript<br>const usuarios = new SharedArray('usuarios', function () {<br>    return JSON.parse(open('../data/usuarios.test.data.json'));<br>});<br>``` |
-| Groups                  | Groups organizam o teste em etapas lógicas, facilitando a leitura dos relatórios e a manutenção do código. | Arquivo: test/k6/rest/criarClube.test.js, linhas 20, 32, 49<br><br>Código:<br>```javascript<br>group('Login Usuário', function () { ... })<br>group('Criar Clube', function () { ... })<br>group('Buscar Unidade', function () { ... })<br>``` |
+| Thresholds              | Thresholds são validações de limite de tempo que criamos após alinhamento com o time e que indicam valores aceitáveis para determinado endpoint por exemplo. No teste do endpoint de criação de clube, utilizamos 2 segundos como limite tolerável. | Arquivo: test/k6/rest/criarClube.test.js, linhas 27-31<br><br>```
+thresholds: {
+    http_req_duration: ['p(95)<2000'], // 2 segundos para 95% das requisições
+    'tempo_criacao_clube': ['p(95)<2000'],
+    'tempo_busca_unidade': ['p(95)<2000'],
+}
+``` |
+| Checks                  | Checks são validações que garantem que a resposta da API está correta, como status esperado ou dados retornados. | Arquivo: test/k6/rest/criarClube.test.js, linhas 44-47<br><br>```
+check(res, {
+    'Clube criado com sucesso - Status: 201': (r) => r.status === 201,
+    'Resposta do servidor igual ao enviado': () => body.nome === nomeClube && JSON.stringify(body.unidades) === JSON.stringify(unidadesClube)
+});
+``` |
+| Helpers                 | Helpers são funções auxiliares que centralizam lógicas comuns, como login. | Arquivo: test/k6/rest/helpers/loginHelper.js<br><br>```
+export function login(baseUrl, username, password) { ... }
+``` |
+| Trends                  | Trends são métricas customizadas para monitorar tempos de execução de operações específicas. | Arquivo: test/k6/rest/criarClube.test.js, linhas 10-11<br><br>```
+const tempoCriacaoClube = new Trend('tempo_criacao_clube');
+const tempoBuscaUnidade = new Trend('tempo_busca_unidade');
+``` |
+| Faker                   | O pacote k6/x/faker é utilizado para gerar dados dinâmicos e variados, como nomes de clubes e unidades, simulando cenários reais e evitando dados repetidos. | Arquivo: test/k6/rest/criarClube.test.js, linha 38<br><br>```
+nomeClube = `${fakerData.address.country()} ${fakerData.numbers.int64()}`;
+``` |
+| Variável de Ambiente    | O endereço da API é configurado via variável de ambiente BASE_URL_REST, permitindo flexibilidade na execução dos testes em diferentes ambientes. | Arquivo: test/k6/rest/criarClube.test.js, linha 8<br><br>```
+const BASE_URL = __ENV.BASE_URL_REST;
+``` |
+| Stages                  | Stages definem a variação da carga durante o teste, simulando ramp up, pico e ramp down. | Arquivo: test/k6/rest/criarClube.test.js, linhas 14-17<br><br>```
+stages: [
+    { duration: '5s', target: 2 },
+    { duration: '20s', target: 8 },
+    { duration: '10s', target: 10 },
+    { duration: '1s', target: 0 },
+]
+``` |
+| Reaproveitamento de Resposta | Dados obtidos em uma requisição (como token de login ou nome do clube criado) são utilizados em etapas seguintes do teste, garantindo encadeamento e realismo. | Arquivo: test/k6/rest/criarClube.test.js, linhas 22-23 e 38-39<br><br>```
+token = login(BASE_URL, usuario.username, usuario.password);
+// ...
+const payload = JSON.stringify({ nome: nomeClube, unidades: unidadesClube });
+``` |
+| Uso de Token de Autenticação | Todas as requisições protegidas enviam o token JWT no header Authorization, simulando o uso real da API. | Arquivo: test/k6/rest/criarClube.test.js, linhas 41 e 54<br><br>```
+headers: {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+}
+``` |
+| Data-Driven Testing     | O teste utiliza o SharedArray para carregar múltiplos usuários de um arquivo JSON, permitindo testar diferentes perfis e cenários. | Arquivo: test/k6/rest/criarClube.test.js, linha 13<br><br>```
+const usuarios = new SharedArray('usuarios', function () {
+    return JSON.parse(open('../data/usuarios.test.data.json'));
+});
+``` |
+| Groups                  | Groups organizam o teste em etapas lógicas, facilitando a leitura dos relatórios e a manutenção do código. | Arquivo: test/k6/rest/criarClube.test.js, linhas 20, 32, 49<br><br>```
+group('Login Usuário', function () { ... })
+group('Criar Clube', function () { ... })
+group('Buscar Unidade', function () { ... })
+``` |
 
 ### Exemplos reais do projeto
 
