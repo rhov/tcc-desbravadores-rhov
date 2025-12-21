@@ -44,6 +44,8 @@ jobs:
         path: mochawesome-report/
 
     - name: Teste de Performance k6 (criarClube)
-      run: |
-        npm install -g k6
-        BASE_URL_REST=${{ secrets.BASE_URL_REST }} k6 run test/k6/rest/criarClube.test.js
+      uses: grafana/k6-action@v0.3.1
+      with:
+        filename: test/k6/rest/criarClube.test.js
+      env:
+        BASE_URL_REST: ${{ secrets.BASE_URL_REST }}
