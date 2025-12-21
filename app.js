@@ -23,6 +23,16 @@ const swaggerOptions = {
     servers: [
       { url: process.env.BASE_URL_REST || 'http://localhost:3000' },
     ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
+    // Não define security globalmente, apenas nos endpoints
   },
   apis: ['./controller/*.js'],
 };

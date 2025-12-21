@@ -40,7 +40,7 @@ const desbravadores = [
 const bcrypt = require('bcryptjs');
 const users = [{
   id: 1,
-  username: "rodrigo",
+  username: "rodrigo@email.com",
   password: bcrypt.hashSync("123", 8) // senha: 123
 }];
 
