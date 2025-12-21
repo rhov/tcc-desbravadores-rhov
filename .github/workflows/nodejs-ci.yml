@@ -47,5 +47,6 @@ jobs:
       uses: grafana/k6-action@v0.3.1
       with:
         filename: test/k6/rest/criarClube.test.js
+        flags: --network host  # Isso permite que o k6 veja o localhost:3000
       env:
         BASE_URL_REST: ${{ secrets.BASE_URL_REST }}
