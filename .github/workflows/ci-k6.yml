@@ -1,0 +1,50 @@
+name: CI Test de Performance k6
+
+on:
+   workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Criar .env
+        run: |
+          echo "BASE_URL_GRAPHQL=${{ secrets.BASE_URL_GRAPHQL }}" >> .env
+          echo "BASE_URL_REST=${{ secrets.BASE_URL_REST }}" >> .env
+
+      - name: Subir as APIs 
+        run: npm run start &
+
+      - name: Esperar a API estar Funcionando
+        run: sleep 8
+
+      - name: Install k6
+        run: |
+          # Baixa a chave e adiciona ao chaveiro do sistema de forma direta
+          curl -fsSL https://dl.k6.io/key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/k6-archive-keyring.gpg
+          
+          # Adiciona o repositório à lista de fontes
+          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+          
+          # Atualiza e instala
+          sudo apt-get update
+          sudo apt-get install k6
+
+      - name: Teste de Performance k6 (criarClube)
+        run: |
+          # Usamos o k6 instalado diretamente no sistema
+          k6 run test/k6/rest/criarClube.test.js
+        env:
+          BASE_URL_REST: ${{ secrets.BASE_URL_REST }} # Deve ser http://localhost:3000
