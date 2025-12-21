@@ -15,15 +15,16 @@ const users = new SharedArray('users', function () {
 });
 
 export const options = {
-    vus: 4,
+    vus: 10,
     stages: [
-        { duration: '1s', target: 1 }, // ramp up
-        { duration: '11s', target: 4 }, // steady
-        { duration: '1s', target: 0 },  // ramp down
+        { duration: '5s', target: 2 }, // ramp up
+        { duration: '20s', target: 8 },
+        { duration: '15s', target: 10 }, // peak load
+        { duration: '10s', target: 0 },  // ramp down
     ],
     thresholds: {
-        http_req_duration: ['p(95)<3.000'],
-        'create_club_duration': ['p(95)<3.000'],
+        http_req_duration: ['p(95)<2000'], // 2segundos para 95% das requisições
+        'create_club_duration': ['p(95)<2000'],
     },
 };
 
@@ -45,17 +46,15 @@ export default function () {
 
     group('Create club', function () {
         const payload = JSON.stringify(
-
             {
                 nome: `${fakerData.address.country()}` + ` ${fakerData.numbers.int64()}`,
                 unidades: [
-                     fakerData.address.city(),    
-                     fakerData.address.state(),
+                    fakerData.address.city(),
+                    fakerData.address.state(),
                 ]
             }
-
         );
-        
+
         const headers = {
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -75,6 +74,6 @@ export default function () {
     });
 
 
-    
+
 
 }
