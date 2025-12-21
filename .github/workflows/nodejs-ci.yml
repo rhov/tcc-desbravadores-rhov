@@ -42,3 +42,8 @@ jobs:
       with:
         name: mochawesome-report ALL tests Graphql
         path: mochawesome-report/
+
+    - name: Teste de Performance k6 (criarClube)
+      run: |
+        npm install -g k6
+        BASE_URL_REST=${{ secrets.BASE_URL_REST }} k6 run test/k6/rest/criarClube.test.js
