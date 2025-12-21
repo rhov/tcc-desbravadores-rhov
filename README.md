@@ -52,30 +52,48 @@ token = login(BASE_URL, usuario.username, usuario.password);
 ```
 
 ### Trends
-Trends são métricas customizadas para monitorar tempos de execução de operações específicas.
-Arquivo: test/k6/rest/criarClube.test.js, linhas 10-11
+Trends são métricas customizadas para monitorar tempos de execução de operações específicas. No código abaixo podemos ver a declaração, a configuração e como parametrizamos utilizando elementos da requisição.
+Arquivo: test/k6/rest/criarClube.test.js, linhas 12-13
+
 ```
 const tempoCriacaoClube = new Trend('tempo_criacao_clube');
 const tempoBuscaUnidade = new Trend('tempo_busca_unidade');
+
+thresholds: {
+        http_req_duration: ['p(95)<2000'], // 2 segundos para 95% das requisições
+        'tempo_criacao_clube': ['p(95)<2000'],
+        'tempo_busca_unidade': ['p(95)<2000'],
+    },
+
+tempoCriacaoClube.add(res.timings.duration);
 ```
 
 ### Faker
 O pacote k6/x/faker é utilizado para gerar dados dinâmicos e variados, como nomes de clubes e unidades, simulando cenários reais e evitando dados repetidos.
-Arquivo: test/k6/rest/criarClube.test.js, linha 38
+A sua configuração mais simples foi da seguinte forma:
+Arquivo: test/k6/rest/criarClube.test.js, linhas 6,8,51-52
 ```
+import * as faker from 'k6/x/faker';
+
+const fakerData = new faker.Faker();
 nomeClube = `${fakerData.address.country()} ${fakerData.numbers.int64()}`;
 ```
 
 ### Variável de Ambiente
 O endereço da API é configurado via variável de ambiente BASE_URL_REST, permitindo flexibilidade na execução dos testes em diferentes ambientes.
-Arquivo: test/k6/rest/criarClube.test.js, linha 8
+Isto possibilita por exemplo, que o mesmo teste seja executado em vários ambientes diferentes, tão somente mudando a chamada inicial.
+
+Arquivo: test/k6/rest/criarClube.test.js, linha 9
 ```
 const BASE_URL = __ENV.BASE_URL_REST;
+
+
+   "BASE_URL_REST=http://localhost:3000 k6 run test/k6/rest/criarUsuarios.test.js"
 ```
 
 ### Stages
 Stages definem a variação da carga durante o teste, simulando ramp up, pico e ramp down.
-Arquivo: test/k6/rest/criarClube.test.js, linhas 14-17
+Arquivo: test/k6/rest/criarClube.test.js, linhas 21-26
 ```
 stages: [
     { duration: '5s', target: 2 },
@@ -86,17 +104,49 @@ stages: [
 ```
 
 ### Reaproveitamento de Resposta
-Dados obtidos em uma requisição (como token de login ou nome do clube criado) são utilizados em etapas seguintes do teste, garantindo encadeamento e realismo.
-Arquivo: test/k6/rest/criarClube.test.js, linhas 22-23 e 38-39
+Dados obtidos em uma requisição (como token de login ou nome do clube criado) são utilizados em etapas seguintes do teste, garantindo um teste dinâmico.
+Arquivo: test/k6/rest/criarClube.test.js, linhas 38,42,57 (token) e 38,51,52,76 e 77 (nomeClube e unidades Clube)
 ```
-token = login(BASE_URL, usuario.username, usuario.password);
-// ...
-const payload = JSON.stringify({ nome: nomeClube, unidades: unidadesClube });
+    let token, nomeClube, unidadesClube;
+
+
+    group('Login Usuário', function () {
+        token = login(BASE_URL, usuario.username, usuario.password);
+        check(token, {
+            'Token existente': (t) => !!t
+        });
+
+        sleep(1);
+    });
+
+
+    group('Criar Clube', function () {
+        nomeClube = `${fakerData.address.country()} ${fakerData.numbers.int64()}`;
+        unidadesClube = [fakerData.address.city(), fakerData.address.state()];
+        const payload = JSON.stringify({ nome: nomeClube, unidades: unidadesClube });
+
+        const headers = {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        };
+
+  group('Buscar Unidade', function () {
+        const unidade = unidadesClube[0];
+        const url = `${BASE_URL}/buscarUnidade?clubeNome=${encodeURIComponent(nomeClube)}&unidade=${encodeURIComponent(unidade)}`;
+        const headers = {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        };
+
 ```
 
 ### Uso de Token de Autenticação
 Todas as requisições protegidas enviam o token JWT no header Authorization, simulando o uso real da API.
-Arquivo: test/k6/rest/criarClube.test.js, linhas 41 e 54
+Arquivo: test/k6/rest/criarClube.test.js, linhas 79-82
 ```
 headers: {
     'Authorization': `Bearer ${token}`,
@@ -105,77 +155,27 @@ headers: {
 ```
 
 ### Data-Driven Testing
-O teste utiliza o SharedArray para carregar múltiplos usuários de um arquivo JSON, permitindo testar diferentes perfis e cenários.
-Arquivo: test/k6/rest/criarClube.test.js, linha 13
+O teste utiliza o SharedArray para carregar múltiplos usuários de um arquivo JSON, simulando o aproveitamento de dados estáticos de um arquivo para condicionar o endpoint.
+Também foi aplicada no uso uma técnica com mod para que assim ainda que o número de vus seja maior que itens do arquivo não quebre o fluxo.
+Arquivo: test/k6/rest/criarClube.test.js, linha 4, 15-17, 37
 ```
+import { SharedArray } from 'k6/data';
+
 const usuarios = new SharedArray('usuarios', function () {
     return JSON.parse(open('../data/usuarios.test.data.json'));
 });
+
+    // DDT: referência ao usuário do SharedArray
+    const usuario = usuarios[(__VU - 1) % usuarios.length];
 ```
 
 ### Groups
-Groups organizam o teste em etapas lógicas, facilitando a leitura dos relatórios e a manutenção do código.
-Arquivo: test/k6/rest/criarClube.test.js, linhas 20, 32, 49
+Groups organizam o teste em etapas lógicas, facilitando a leitura dos relatórios e a manutenção do código. Similar aos describe de testes de api.
+Arquivo: test/k6/rest/criarClube.test.js, linhas 41,50,75
 ```
 group('Login Usuário', function () { ... })
 group('Criar Clube', function () { ... })
 group('Buscar Unidade', function () { ... })
-```
-
-### Exemplos reais do projeto
-
-**Groups e Helpers**
-O código abaixo está armazenado no arquivo `test/k6/rest/criarClube.test.js`, linhas 28-32, e demonstra o uso do conceito de Groups. Dentro dele, é feito uso de um Helper, a função de login importada de outro script:
-
-```javascript
-group('Login Usuário', function () {
-  token = login(BASE_URL, usuario.username, usuario.password);
-});
-```
-
-**Thresholds e Trends**
-No início do arquivo de teste, são definidos thresholds e trends para monitorar o tempo das operações:
-
-```javascript
-const tempoCriacaoClube = new Trend('tempo_criacao_clube');
-export const options = {
-  thresholds: {
-    'tempo_criacao_clube': ['p(95)<2000'],
-  },
-};
-```
-
-**Checks**
-Após cada requisição, checks validam o status e o conteúdo da resposta:
-
-```javascript
-check(res, {
-  'clube criado status 201': (r) => r.status === 201,
-  'resposta igual ao enviado': () => body.nome === nomeClube
-});
-```
-
-**Data-Driven Testing**
-Usuários são carregados de um arquivo externo para simular diferentes perfis:
-
-```javascript
-const usuarios = new SharedArray('usuarios', function () {
-  return JSON.parse(open('../data/usuarios.test.data.json'));
-});
-```
-
-**Faker**
-Geração dinâmica de dados para clubes e unidades:
-
-```javascript
-nomeClube = `${fakerData.address.country()} ${fakerData.numbers.int64()}`;
-```
-
-**Reaproveitamento de Resposta**
-O token obtido no login é utilizado nas requisições seguintes:
-
-```javascript
-token = respostaLogin.json().token;
 ```
 
 ---
