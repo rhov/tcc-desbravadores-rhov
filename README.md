@@ -48,7 +48,6 @@ export function login(baseUrl, username, password) { ... }
 Arquivo: test/k6/rest/criarClube.test.js, linha 5 e 42
 ```
 import { login } from './helpers/loginHelper.js';
-```
 token = login(BASE_URL, usuario.username, usuario.password);
 ```
 
