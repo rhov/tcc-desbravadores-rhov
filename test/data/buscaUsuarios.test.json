@@ -1,0 +1,42 @@
+[
+  {
+    "email": "testuser1@example.com",
+    "password": "Password1!"
+  },
+  {
+    "email": "testuser2@example.com",
+    "password": "Password2!"
+  },
+  {
+    "email": "testuser3@example.com",
+    "password": "Password3!"
+  },
+  {
+    "email": "testuser4@example.com",
+    "password": "Password4!"
+  },
+  {
+    "email": "testuser5@example.com",
+    "password": "Password5!"
+  },
+  {
+    "email": "testuser6@example.com",
+    "password": "Password6!"
+  },
+  {
+    "email": "testuser7@example.com",
+    "password": "Password7!"
+  },
+  {
+    "email": "testuser8@example.com",
+    "password": "Password8!"
+  },
+  {
+    "email": "testuser9@example.com",
+    "password": "Password9!"
+  },
+  {
+    "email": "testuser10@example.com",
+    "password": "Password10!"
+  }
+]
